@@ -1,0 +1,93 @@
+.wa-toggle-button .wa-toggle-button__checkbox {
+    display: none;
+}
+
+.wa-toggle-button .wa-toggle-button__label {
+    display: inline-block;
+    position: relative;
+    padding: 5px 10px;
+    border: 1px solid #007cba;
+    border-radius: 3px;
+    overflow: hidden;
+    color: #1e1e1e;
+    transition: color 0.4s;
+}
+
+.wa-toggle-button:hover .wa-toggle-button__label {
+    background: #f0f7fb
+}
+
+.wa-toggle-button .wa-toggle-button__label>* {
+    position: relative;
+}
+
+.wa-toggle-button .wa-toggle-button__label::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    left: 0;
+    background: #007cba;
+    transition: height 0.3s ease-out;
+}
+
+.wa-toggle-button:hover .wa-toggle-button__label::before {
+    background: #056fad;
+}
+
+.wa-toggle-button--checked .wa-toggle-button__label {
+    color: white;
+}
+
+.wa-toggle-button--checked .wa-toggle-button__label:before {
+    height: 100%;
+}
+
+.wa-toggle-button--owned-by-list .wa-toggle-button__label {
+    border-width: 1px 0px;
+}
+
+.wa-toggle-button--owned-by-list .wa-toggle-button__label {
+    border-radius: 0px;
+}
+
+.wa-toggle-button--owned-by-list.wa-toggle-button--first .wa-toggle-button__label {
+    border-radius: 3px 0px 0px 3px;
+    border-left-width: 1px;
+}
+
+.wa-toggle-button--owned-by-list.wa-toggle-button--last .wa-toggle-button__label {
+    border-radius: 0px 3px 3px 0px;
+    border-right-width: 1px;
+}
+
+.wa-toggle-button--owned-by-list.wa-toggle-button--last.wa-toggle-button--first .wa-toggle-button__label {
+    border-radius: 3px;
+}
+
+.wa-toggle-button--owned-by-list .wa-toggle-button__gutter {
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: inline-block;
+    background: #007cba;
+}
+
+.wa-toggle-button--owned-by-list .wa-toggle-button__gutter:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    background: white;
+    width: 1px;
+    bottom: 20%;
+    height: 0;
+    transition: height 0.3s ease-out;
+}
+
+.wa-toggle-button--owned-by-list.wa-toggle-button--with-gutter .wa-toggle-button__gutter:before {
+    height: 60%;
+}

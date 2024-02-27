@@ -1,0 +1,48 @@
+.in-sub-panel #customize-theme-controls .customize-pane-child.current-panel-parent,
+#customize-theme-controls .customize-pane-child.current-section-parent {
+    -webkit-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    transform: translateX(-100%);
+}
+
+.customizing_without_transions #customize-info,
+.customizing_without_transions #customize-theme-controls .customize-pane-child,
+.customizing_without_transions #customize-theme-controls .customize-pane-parent{
+    transition: 0.01s transform cubic-bezier(.645, .045, .355, 1) !important;
+}
+
+.customizing_without_parent_transions #customize-theme-controls .customize-pane-parent{
+    transition: 0.01s transform cubic-bezier(.645, .045, .355, 1) !important;
+}
+.customizing_without_child_transions #customize-theme-controls .customize-pane-child{
+    transition: 0.01s transform cubic-bezier(.645, .045, .355, 1) !important;
+}
+.customize-pane-child > li.accordion-section.control-section:not(.control-subsection){
+    margin: 0px -12px;
+}
+#customize-theme-controls .customize-pane-child > li.accordion-section.control-section:not(.control-subsection) > h3{
+    border-bottom-color: #f0f0f1 !important;
+    color: #50575e !important;
+    background: #fff !important;
+    border-bottom: 1px solid #dcdcde !important;
+    border-left: 0px !important;
+    font-size: 14px !important;
+    border-right: none !important;
+    padding: 10px 10px 11px 14px !important;
+    line-height: 1.55 !important;
+    transition: all 0.2s !important;
+    cursor: pointer !important;
+    border-left: 4px solid #fff !important;
+    position: relative !important;
+}
+#customize-theme-controls .customize-pane-child > li.accordion-section.control-section:not(.control-subsection) > h3:after{
+    color: #a7aaad !important;
+}
+#customize-theme-controls .customize-pane-child > li.accordion-section.control-section:not(.control-subsection) > h3:hover{
+    background: #f6f7f7 !important;
+    color: #2271b1 !important;
+    border-left: 4px solid #2271b1 !important;
+}
+#customize-theme-controls .customize-pane-child > li.accordion-section.control-section:not(.control-subsection) > h3:hover:after {
+    color: #2271b1 !important;
+}

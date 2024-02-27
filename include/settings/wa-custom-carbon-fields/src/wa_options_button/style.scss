@@ -1,0 +1,92 @@
+.wa-options-button{
+    position: relative;
+    padding: 3px 0px 2px 0px;
+    background: transparent;
+    display: block;
+    border: 1px solid transparent;
+    border-radius: 3px 3px 0px 0px;
+    transition: all 0.3s;
+    max-width: 30px;
+    opacity: 1;
+    cursor: pointer;
+}
+
+
+.wa-options-button::after{
+    content: " ";
+    position: absolute;
+    display: block;
+    z-index: 1;
+    bottom: -1px;
+    width: 100%;
+    height: 1px;
+    background: white;
+    transition: all 0.1s;
+    transition-delay: 0.2s;
+    opacity: 0;
+    visibility: collapse;
+}
+.wa-options-button > .dashicons{
+    font-size: 16px;
+    transform: rotate(90deg);
+    line-height: 20px;
+}
+.wa-options-button__items{
+    position: absolute;
+    display: block;
+    top: 100%;
+    left: -1px;
+    z-index: 1;
+    margin: 0px;
+    border-radius: 0px 3px 3px 3px;
+    background: white;
+    border: 1px solid #bfc0c3;
+    box-shadow: 2px 2px 0px 2px #0000002b;
+    transition: all 0.2s;
+    opacity: 0;
+    visibility: collapse;
+    overflow: hidden;
+}
+.wa-options-button__item{
+    display: flex;
+    padding: 5px 10px 5px 5px;
+    margin: 0px;
+    transition: all 0.3s;
+}
+.wa-options-button__item-text{
+    width: max-content;
+}
+.wa-options-button__item .dashicons
+{
+    font-size: 16px;
+    line-height: 20px;
+    margin-right: 5px;
+    transition-duration: 0s;
+}
+
+.wa-options-button--opened:not(.wa-options-button--hidden){
+    border-color: #bfc0c3;
+    transition: all 0.3s;
+}
+.wa-options-button--opened:not(.wa-options-button--hidden)::after{
+    transition: all 0.2s;
+    transition-delay: 0s;
+    visibility: visible;
+    opacity: 1;
+}
+.wa-options-button--opened:not(.wa-options-button--hidden) .wa-options-button__items{
+    transition: all 0.3s;
+    visibility: visible;
+    opacity: 1;
+}
+
+.wa-options-button__item:hover{
+    background: #2271b1;
+    color: white;
+}
+
+.wa-options-button--hidden{
+    max-width: 0;
+    margin: 0;
+    opacity: 0;
+}

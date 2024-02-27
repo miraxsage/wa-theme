@@ -1,0 +1,54 @@
+.wa-advanced-pill-list__item {
+	border: 1px solid #c3c3c3;
+    padding: 3px 5px;
+    color: #727272;
+    background: white;
+    position: relative;
+}
+.wa-advanced-pill-list__item .dashicons{
+    font-size: 18px;
+    padding-right: 5px;
+    color: #959595;
+}
+.wa-advanced-pill-list__item_checked{
+    color: rgb(30, 30, 30);
+    border: 1px solid #007cba;
+}
+.wa-advanced-pill-list__item_checked .dashicons{
+    color: #007cba;
+}
+.wa-advanced-pill-list__item.blocked:before{
+    background: repeating-linear-gradient(-45deg, transparent, transparent 50%, rgba(255, 0, 0, 0.4) 50%, rgba(255, 0, 0, 0.4) 60%, transparent 60%, transparent 100%) transparent;
+    content: " ";
+    display: block;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    background-size: 5px 5px;
+}
+.wa-advanced-pill-list__item.blocked{
+    color: #a93f3f;
+    border-color: #a93f3f;
+}
+.wa-advanced-pill-list__item.blocked .dashicons{
+    color: #a93f3f;
+}
+.wa-advanced-pill-list__item:nth-child(n + 1){
+	margin-top: 3px;
+}
+.wa-advanced-pill-list__item.metaitem{
+    cursor: default;
+    background: #fbfbfc;
+    border: 1px solid #e5e5e5;
+}
+
+.wa-advanced-pill-list__description{
+    font-style: italic;
+    color: #666;
+    display: block;
+    margin-top: -4px;
+    margin-bottom: 6px;
+}
+

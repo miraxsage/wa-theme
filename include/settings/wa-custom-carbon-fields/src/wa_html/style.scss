@@ -1,0 +1,39 @@
+.wa-html{
+    font-style: italic;
+}
+
+.wa-html--description.cf-field__help{
+    display: block;
+    margin: 4px 0px -8px 0px;
+}
+.wa-html--description.cf-field__help::before,
+.wa-html--container-description .description::before
+{
+    font-family: dashicons;
+    padding-right: 8px;
+    font-style: normal;
+    font-size: 17px;
+    line-height: 12px;
+    vertical-align: sub;
+    color: #007cba;
+    content: "\F14C";
+}
+
+.wa-html--container-description .description::before{
+    padding-right: 2px;
+}
+
+.wa-html--container-description .description{
+    margin: 6px 0px 4px 0px;
+    font-size: 14px;
+    color: #676767;
+    line-height: 20px;
+    font-style: normal;
+}
+
+.wa-html--container-description .title{
+    color: #1d2327;
+    font-weight: 600;
+    font-size: 14px;
+    font-style: normal;
+}
