@@ -104,3 +104,19 @@ $this->init_toggle_list_field_config('page_semantics__page_header', 'page header
 $this->init_toggle_list_field_config('page_semantics__page_headline', 'page headline', '(надпись заголовка страницы)', ['h1', 'div']);
 $this->init_toggle_list_field_config('page_semantics__page_headings', 'page headings', '(блок навигации страницы)', ['nav', 'div']);
 
+$profiled_defaults = [];
+$profiled_defaults["blocks_sequence"] = $this->config["page__blocks_sequence"]["default"];
+$schema_defaults = [];
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "page_schema__"))
+        $schema_defaults[str_replace("page_schema__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["schema"] = $schema_defaults;
+$semantics_defaults = []; 
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "page_semantics__"))
+        $semantics_defaults[str_replace("page_semantics__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["semantics"] = $semantics_defaults;
+
+$this->config["page__profiled_settings"] = ["default" => $profiled_defaults];

@@ -16,6 +16,12 @@ require_once("include/main-category.php");
 require_once("include/post-headings.php");
 require_once("include/social-buttons.php");
 
+//Reset to defaults
+// add_action("carbon_fields_register_fields", function(){
+//    carbon_set_theme_option("common__profiled_settings", WaThemeSettings::get()->get_setting_default("common__profiled_settings"));
+//    set_theme_mod("common__profiled_settings", $def);
+// });
+
 add_filter("redirect_term_location", function($url, $tax){
     $args = [];
     foreach($_REQUEST as $key => $val){

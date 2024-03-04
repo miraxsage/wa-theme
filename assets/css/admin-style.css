@@ -1,67 +1,79 @@
 /* carbon fields fix */
-.cf-container--tabbed-horizontal .cf-container__fields{
-    margin: 0px;
+.cf-container--tabbed-horizontal .cf-container__fields {
+  margin: 0px;
 }
-.cf-container--tabbed-horizontal .cf-container__fields .cf-field.cf-text{
-    border: 0px;
+.cf-container--tabbed-horizontal .cf-container__fields .cf-field.cf-text {
+  border: 0px;
 }
 
-.wa-advanced-pill-list__item.metaitem.wa-sequence-section-fix{
-    background: #effbeb;
-    color: #8ba588;
-    border-color: #bdd1ba;
+.wa-advanced-pill-list__item.metaitem.wa-sequence-section-fix {
+  background: #effbeb;
+  color: #8ba588;
+  border-color: #bdd1ba;
 }
-.wa-advanced-pill-list__item.metaitem.wa-sequence-mainart-fix{
-    background: #eaf3f5;
-    color: #7999a1;
-    border-color: #bed4d9;
+.wa-advanced-pill-list__item.metaitem.wa-sequence-mainart-fix {
+  background: #eaf3f5;
+  color: #7999a1;
+  border-color: #bed4d9;
 }
 .wa-advanced-pill-list__item.metaitem.wa-sequence-header-fix {
-    background: #fffef1;
-    color: #afa068;
-    border-color: #e1d9ba;
+  background: #fffef1;
+  color: #afa068;
+  border-color: #e1d9ba;
 }
 /* main-category */
-.wa-main-category-toggle-indicator{
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' width='24' height='24' className='components-panel__arrow' aria-hidden='true' focusable='false'%3E%3Cpath d='M6.5 12.4L12 8l5.5 4.4-.9 1.2L12 10l-4.5 3.6-1-1.2z'%3E%3C/path%3E%3C/svg%3E") !important;
-    display: block;
-    height: 20px;
-    width: 20px;
-    margin: auto;
-    background-position: center;
-    transform: rotate(0deg);
+.wa-main-category-toggle-indicator {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' width='24' height='24' className='components-panel__arrow' aria-hidden='true' focusable='false'%3E%3Cpath d='M6.5 12.4L12 8l5.5 4.4-.9 1.2L12 10l-4.5 3.6-1-1.2z'%3E%3C/path%3E%3C/svg%3E") !important;
+  display: block;
+  height: 20px;
+  width: 20px;
+  margin: auto;
+  background-position: center;
+  transform: rotate(0deg);
 }
-.postbox.closed .wa-main-category-toggle-indicator{
-    transform: rotate(180deg);
+.postbox.closed .wa-main-category-toggle-indicator {
+  transform: rotate(180deg);
 }
-.wa-main-category-toggle-indicator:before{
-    content: "" !important;
+.wa-main-category-toggle-indicator:before {
+  content: "" !important;
 }
-.postbox-header.wa-main-category-header{
-    border: 2px solid transparent;
-    padding-bottom: 1px;
-    cursor: pointer;
-    transition: background .1s ease-in-out;
+.postbox-header.wa-main-category-header {
+  border: 2px solid transparent;
+  padding-bottom: 1px;
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
 }
-.postbox-header.wa-main-category-header > h2{
-    padding: 0 15px !important;
+.postbox-header.wa-main-category-header > h2 {
+  padding: 0 15px !important;
 }
-.postbox-header.wa-main-category-header:hover{
-    background: #f0f0f0;
+.postbox-header.wa-main-category-header:hover {
+  background: #f0f0f0;
 }
-.postbox-header.wa-main-category-header > *{
-    cursor: pointer !important;
+.postbox-header.wa-main-category-header > * {
+  cursor: pointer !important;
 }
-.postbox-header.wa-main-category-header.focused{
-    border: 2px solid #007cba;
+.postbox-header.wa-main-category-header.focused {
+  border: 2px solid #007cba;
 }
-.postbox-header.wa-main-category-header .handlediv{
-    width: 55px;
+.postbox-header.wa-main-category-header .handlediv {
+  width: 55px;
 }
-.postbox-header.wa-main-category-header .handlediv:focus{
-    outline: none !important;
-    box-shadow: none !important;
+.postbox-header.wa-main-category-header .handlediv:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
-.postbox-header.wa-main-category-header + .inside{
-    padding: 0px 14px 17px;
+.postbox-header.wa-main-category-header + .inside {
+  padding: 0px 14px 17px;
+}
+.cf-container__tabs-item.cf-container__tabs-item--current {
+  position: relative;
+}
+.cf-container__tabs-item.cf-container__tabs-item--current:before {
+  content: "";
+  display: block;
+  height: 2px;
+  position: absolute;
+  background: #2271b1;
+  top: -1px;
+  width: 100%;
 }

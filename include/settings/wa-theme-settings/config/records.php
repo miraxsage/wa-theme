@@ -141,3 +141,19 @@ $this->init_toggle_list_field_config('record_semantics__page_article', 'post art
 $this->init_toggle_list_field_config('record_semantics__page_headline', 'post headline', '(надпись заголовка статьи)', ['h1', 'div']);
 $this->init_toggle_list_field_config('record_semantics__page_headings', 'post headings', '(блок навигации статьи)', ['nav', 'div']);
 
+$profiled_defaults = [];
+$profiled_defaults["blocks_sequence"] = $this->config["record__blocks_sequence"]["default"];
+$schema_defaults = [];
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "record_schema__"))
+        $schema_defaults[str_replace("record_schema__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["schema"] = $schema_defaults;
+$semantics_defaults = []; 
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "record_semantics__"))
+        $semantics_defaults[str_replace("record_semantics__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["semantics"] = $semantics_defaults;
+
+$this->config["record__profiled_settings"] = ["default" => $profiled_defaults];

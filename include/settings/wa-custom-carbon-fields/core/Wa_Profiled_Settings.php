@@ -4,14 +4,14 @@ namespace Custom_Carbon_Fields;
 
 require_once(__DIR__."/wa_isolated_gutenberg/import.php");
 
-class Wa_Sidebars_Configuration_Field extends Wa_Custom_Carbon {
+class Wa_Profiled_Settings_Field extends Wa_Custom_Carbon {
 
     private $description = "";
 
     public function __construct($type, $name, $label)
     {
         parent::__construct($type, $name, $label);
-        if(isset($_REQUEST['page']) && preg_match("/wa-widgets-settings\\.php/", $_REQUEST['page']) === 1)
+        if(isset($_REQUEST['page']) && preg_match("/wa-profiled-settings\\.php/", $_REQUEST['page']) === 1)
             wa_import_isolated_gutenberg();
     }
 

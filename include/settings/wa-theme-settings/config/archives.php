@@ -106,3 +106,19 @@ $this->init_toggle_list_field_config('archive_semantics_cell__article', 'call ar
 $this->init_toggle_list_field_config('archive_semantics_cell__header', 'cell header', '(заголовок каждой статьи)', ['header', 'div']);
 $this->init_toggle_list_field_config('archive_semantics_cell__headline', 'cell headline', '(текст заголовка каждой статьи)', ['h2', 'div']);
 
+$profiled_defaults = [];
+$profiled_defaults["blocks_sequence"] = $this->config["archive__blocks_sequence"]["default"];
+$schema_defaults = [];
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "archive_schema__"))
+        $schema_defaults[str_replace("archive_schema__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["schema"] = $schema_defaults;
+$semantics_defaults = []; 
+foreach($this->config as $k => $v){
+    if(str_starts_with($k, "archive_semantics__"))
+        $semantics_defaults[str_replace("archive_semantics__", "", $k)] = $v["default"];
+}  
+$profiled_defaults["semantics"] = $semantics_defaults;
+
+$this->config["archive__profiled_settings"] = ["default" => $profiled_defaults];

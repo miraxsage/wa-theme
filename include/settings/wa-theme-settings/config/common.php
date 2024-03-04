@@ -15,6 +15,15 @@ trait WaThemeSettingsConfig{
             "options" => $opts
         ];
     }
+
+    public function settings_list(){
+        return array_keys($this->config);
+    }
+
+    public function get_setting_config($setting){
+        return $this->config[$setting];
+    }
+
     private function init_bool_field_config($setting_name, $title, $description = "", $default = true){
         $this->init_field_config("bool", $setting_name, $title, $description, $default);
     }
@@ -74,17 +83,6 @@ trait WaThemeSettingsConfig{
         $this->init_textarea_field_config("common__code_at_body_end", "Код перед закрытием \"body\"",
             "HTML-код, добавляемый перед закрытием тега </body> на каждой странице");
 
-        // Блок "Сайдбары"
-        //
-        $dcf = '{"visible":true, "lines": [{"width":null,"height":null,"margin":"- - - -","padding":"- - - -","bg":null,"topBorder":null,"bottomBorder":null,"items":[]}]}';
-        $this->config["common__sidebars_configuration"] = [
-            "type" => "sidebars_configuration",
-            "default" => sprintf('[{"profile": "Общий", "key": "common", "filter": {"posts": {"mode": "all", "ids": []}, "pages": {"mode": "all", "ids": []}, "cats": {"mode": "all", "ids": []}}, "config":    {"header":%1$s,"footer":%1$s,"inner_left":%1$s,"inner_right":%1$s,"outer_left":%1$s,"outer_right":%1$s}    }]', $dcf),
-            "title" => "Конфигурация и содержание блоков сайдбаров",
-            "description" => "Укажите видимость отдельных сайдбаров, их конфигурацию и наполнение содержимым (виджетами)"
-        ];
-
-
         // Конфигурация настроек записей
         require("records.php");
 
@@ -93,6 +91,23 @@ trait WaThemeSettingsConfig{
 
         // Конфигурация настроек архивов
         require("archives.php");
+
+        
+        // Блок "Профильных настроек"
+        //
+        $widgets_block_defaults = '{"visible":true, "lines": [{"width":null,"height":null,"margin":"- - - -","padding":"- - - -","bg":null,"topBorder":null,"bottomBorder":null,"items":[]}]}';
+        $default_config = json_encode([
+            "pages" => $this->config["page__profiled_settings"]["default"],
+            "records" => $this->config["record__profiled_settings"]["default"],
+            "archives" => $this->config["archive__profiled_settings"]["default"],
+            "sidebars" => json_decode(sprintf('{"header":%1$s,"footer":%1$s,"inner_left":%1$s,"inner_right":%1$s,"outer_left":%1$s,"outer_right":%1$s}', $widgets_block_defaults)) 
+        ]);
+        $this->config["common__profiled_settings"] = [
+            "type" => "profiled_settings",
+            "default" =>  '[{"profile": "Общий", "key": "common", "filter": {"posts": {"mode": "all", "ids": []}, "pages": {"mode": "all", "ids": []}, "cats": {"mode": "all", "ids": []}}, "config":'.$default_config.'}]',
+            "title" => "",
+            "description" => ""
+        ];
     }
 
     private function choices_to_buttons($choices){
@@ -193,8 +208,8 @@ trait WaThemeSettingsConfig{
                     ->set_description($config["description"])
                     ->set_default_value($default ?? "")
                     ->set_choices($config["choices"]);
-            elseif($config["type"] == "sidebars_configuration")
-                return Field::make('wa_sidebars_configuration', $setting, $config["title"])
+            elseif($config["type"] == "profiled_settings")
+                return Field::make('wa_profiled_settings', $setting, $config["title"])
                     ->set_description($config["description"])
                     ->set_default_value($default ?? "{}");
         }

@@ -77,7 +77,7 @@ class WaThemeSettings{
                 if (!empty($queried_cat)) {
                     if ($queried_cat instanceof WP_Term) {
                         $val = carbon_get_term_meta($queried_cat->term_id, $name);
-                        if(str_ends_with($name, "__sidebars_configuration") && $this->get_setting_default($name) == $val)
+                        if(str_ends_with($name, "__profiled_settings") && $this->get_setting_default($name) == $val)
                             $val = null;
                     }
                 }
@@ -87,7 +87,7 @@ class WaThemeSettings{
                 if (!empty($queried_obj)) {
                     if ($queried_obj instanceof WP_Post) {
                         $val = carbon_get_post_meta($queried_obj->ID, $name);
-                        if(str_ends_with($name, "__sidebars_configuration") && $this->get_setting_default($name) == $val)
+                        if(str_ends_with($name, "__profiled_settings") && $this->get_setting_default($name) == $val)
                             $val = null;
                     }
                 }
@@ -229,8 +229,8 @@ class WaThemeSettings{
         return $profile_filter["pages"]["mode"] == "all" && $profile_filter["posts"]["mode"] == "all" && $profile_filter["cats"]["mode"] == "all";
     }
     public function sidebar_config($sidebar = null){
-        $default_full_config = $this->get_setting_default("common__sidebars_configuration");
-        $full_config = $this->get_setting("common__sidebars_configuration", true);
+        $default_full_config = $this->get_setting_default("common__profiled_settings");
+        $full_config = $this->get_setting("common__profiled_settings", true);
         if(empty($full_config))
             $full_config = $default_full_config || null;
         if(empty($full_config) || empty($sidebar))

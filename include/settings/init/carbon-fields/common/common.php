@@ -31,13 +31,6 @@ Container::make("theme_options", "wa_common_settings", "Общие настро�
         $settings->get_sync_setting_control("common__code_at_body_end")
     ]);
 
-Container::make("theme_options", "wa_widgets_settings", "Виджеты")
-    ->set_page_file("wa-widgets-settings.php")
-    ->set_page_menu_title("Виджеты")
-    ->set_page_parent("wa-settings.php")
-    ->add_fields([
-        $settings->get_sync_setting_control("common__sidebars_configuration"),
-    ]);
 
 
 

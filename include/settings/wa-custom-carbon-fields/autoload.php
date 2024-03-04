@@ -8,7 +8,7 @@ use Custom_Carbon_Fields\Wa_Toggle_Button_List_Field;
 use Custom_Carbon_Fields\Wa_Html_Field;
 use Custom_Carbon_Fields\Wa_Text_Field;
 use Custom_Carbon_Fields\Wa_Active_Tab_Saver_Field;
-use Custom_Carbon_Fields\Wa_Sidebars_Configuration_Field;
+use Custom_Carbon_Fields\Wa_Profiled_Settings_Field;
 
 define( 'Wa_Custom_Carbon_Fields\\DIR', __DIR__ );
 if(!defined('CF_SCRIPT_DEBUG'))
@@ -22,7 +22,7 @@ require_once("core/wa_advanced_pill_list.php");
 require_once("core/wa_toggle.php");
 require_once("core/wa_schema_info.php");
 require_once("core/wa_toggle_button_list.php");
-require_once("core/wa_sidebars_configuration.php");
+require_once("core/wa_profiled_settings.php");
 
 Carbon_Fields::extend( Wa_Active_Tab_Saver_Field::class, function( $container ) {
     return new Wa_Active_Tab_Saver_Field( $container['arguments']['type'], $container['arguments']['name'], $container['arguments']['label'] );
@@ -45,6 +45,6 @@ Carbon_Fields::extend( Wa_Toggle_Button_List_Field::class, function( $container 
 Carbon_Fields::extend( Wa_Text_Field::class, function( $container ) {
     return new Wa_Text_Field( $container['arguments']['type'], $container['arguments']['name'], $container['arguments']['label'] );
 });
-Carbon_Fields::extend( Wa_Sidebars_Configuration_Field::class, function( $container ) {
-    return new Wa_Sidebars_Configuration_Field( $container['arguments']['type'], $container['arguments']['name'], $container['arguments']['label'] );
+Carbon_Fields::extend( Wa_Profiled_Settings_Field::class, function( $container ) {
+    return new Wa_Profiled_Settings_Field( $container['arguments']['type'], $container['arguments']['name'], $container['arguments']['label'] );
 });

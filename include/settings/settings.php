@@ -39,6 +39,7 @@ add_action("carbon_fields_register_fields", function(){
     require_once("init/carbon-fields/common/pages.php");
     require_once("init/carbon-fields/common/records.php");
     require_once("init/carbon-fields/common/archives.php");
+    require_once("init/carbon-fields/common/common-profiles.php");
     // а также персональных на соответсвующих страницах элементов (записи, страницы, архивы)
     require_once("init/carbon-fields/personal/page.php");
     require_once("init/carbon-fields/personal/record.php");

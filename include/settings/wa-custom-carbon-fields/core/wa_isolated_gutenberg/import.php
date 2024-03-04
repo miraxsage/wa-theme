@@ -54,6 +54,15 @@ function wa_import_isolated_gutenberg(){
         ];
 
 
+        $profiled_settings_configs = [];
+        $settings = WaThemeSettings::get();
+        foreach(WaThemeSettings::get()->settings_list() as $setting){
+            if(preg_match("/^((page|record|archive)_(schema|semantics|_blocks_sequence))/", $setting) === 1)
+                $profiled_settings_configs[$setting] = $settings->get_setting_config($setting);
+        }
+        $profiled_settings_vars = "const wa_common__profiled_settings_configs = JSON.parse(\"".str_replace('"', '\\"', str_replace('\\', '\\\\', json_encode($profiled_settings_configs)))."\");";
+        $profiled_settings_vars .= "const wa_common__profiled_settings_default = JSON.parse(\"".str_replace('"', '\\"', str_replace('\\', '\\\\', WaThemeSettings::get()->get_setting_default("common__profiled_settings")))."\")[0];";
+
         $editor_translations = load_script_textdomain( "wp-edit-post", "default", "" );
         $editor_translations = <<<JS
 ( function( domain, translations ) {
@@ -62,7 +71,7 @@ function wa_import_isolated_gutenberg(){
 	wp.i18n.setLocaleData( localeData, domain );
 } )( "default", {$editor_translations} );
 JS;
-        wp_add_inline_script( 'wa_iso_gutenberg_script', 'const wa_iso_gutenberg_default_settings = JSON.parse(`'.str_replace('\\', '\\\\', json_encode($default_settings)).'`);'.$editor_translations);
+        wp_add_inline_script( 'wa_iso_gutenberg_script', 'const wa_iso_gutenberg_default_settings = JSON.parse(`'.str_replace('\\', '\\\\', json_encode($default_settings)).'`);'.$profiled_settings_vars.$editor_translations);
     });
 }
 
