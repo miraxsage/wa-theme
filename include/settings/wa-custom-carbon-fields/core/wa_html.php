@@ -6,6 +6,7 @@ class Wa_Html_Field extends Wa_Custom_Carbon {
 
     protected $html = "";
     protected $mode = "";
+    protected $style = "";
     protected $save_header = false;
     protected $save_divider = false;
 
@@ -19,6 +20,7 @@ class Wa_Html_Field extends Wa_Custom_Carbon {
         $field_data = parent::to_json( $load );
         $field_data = array_merge($field_data, [
            "html" => $this->html,
+           "style" => $this->style,
            "mode" => $this->mode,
            "saveHeader" => $this->save_header,
            "saveDivider" => $this->save_divider
@@ -32,6 +34,10 @@ class Wa_Html_Field extends Wa_Custom_Carbon {
     }
     function set_html($html) {
         $this->html = strval($html);
+        return $this;
+    }
+    function set_style($style) {
+        $this->style = strval($style);
         return $this;
     }
     function set_save_header($save){

@@ -25,6 +25,12 @@ Container::make("theme_options", "wa_pages_settings", "Настройки стр
         $settings->get_sync_setting_control("page_comments__personal_agreement"),
         $settings->get_sync_setting_control("page_comments__personal_agreement_label")
     ])
+    ->add_tab("Дополнительно", [
+        Field::make('wa_html', "page_additional")
+            ->set_mode("description")
+            ->set_html("Дополнительные настройки последовательности блоков на странице, Schema и семантических атрибутов настраиваются в <a href=\"/wp-admin/admin.php?page=wa-profiled-settings.php&target=pages\">разделе профилей</a>")
+            ->set_style("margin-bottom:5px;"),
+    ])
     // ->add_tab("Schema", [
     //     Field::make('wa_html', "page_schema__description")
     //         ->set_mode("description")

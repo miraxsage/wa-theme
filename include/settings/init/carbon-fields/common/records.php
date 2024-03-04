@@ -33,6 +33,12 @@ Container::make("theme_options", "wa_records_settings", "Настройки за
         $settings->get_sync_setting_control("record_similar__img_outside"),
         $settings->get_sync_setting_control("record_similar__blocks_sequence")
     ])
+    ->add_tab("Дополнительно", [
+        Field::make('wa_html', "record_additional")
+            ->set_mode("description")
+            ->set_html("Дополнительные настройки последовательности блоков на странице, Schema и семантических атрибутов настраиваются в <a href=\"/wp-admin/admin.php?page=wa-profiled-settings.php&target=records\">разделе профилей</a>")
+            ->set_style("margin-bottom:5px;"),
+    ])
     // ->add_tab("Schema", [
     //     Field::make('wa_html', "record_schema__description")
     //         ->set_mode("description")

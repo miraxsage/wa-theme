@@ -22,6 +22,12 @@ Container::make("theme_options", "wa_archives_settings", "Настройки а�
         $settings->get_sync_setting_control("archive__category_description_position"),
         $settings->get_sync_setting_control("archive__more_label"),
     ])
+    ->add_tab("Дополнительно", [
+        Field::make('wa_html', "archive_additional")
+            ->set_mode("description")
+            ->set_html("Дополнительные настройки последовательности блоков на странице, Schema и семантических атрибутов настраиваются в <a href=\"/wp-admin/admin.php?page=wa-profiled-settings.php&target=archives\">разделе профилей</a>")
+            ->set_style("margin-bottom:5px;"),
+    ])
     // ->add_tab("Schema", [
     //     Field::make('wa_html', "archive_schema__description")
     //         ->set_mode("description")

@@ -55,6 +55,14 @@ class WaProfiledSettings extends Component {
         super(props);
         this.config = null;
         this.action = createRef();
+        this.activeTab = createRef();
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("target")) {
+            const target = urlParams.get("target");
+            if (target == "pages") this.activeTab.current = 0;
+            if (target == "records") this.activeTab.current = 1;
+            if (target == "archives") this.activeTab.current = 2;
+        }
         this.state = { chosenProfile: "common" };
         this.frameConfigControl = this.frameConfigControl.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -79,6 +87,12 @@ class WaProfiledSettings extends Component {
                         : c
                 )
             );
+    }
+    componentDidMount() {
+        if (typeof this.activeTab.current == "number") {
+            this.activeTab.current = null;
+            this.setState({ ...this.state });
+        }
     }
     onSettingsChanged(target) {
         return (newConfig) =>
@@ -210,7 +224,7 @@ class WaProfiledSettings extends Component {
                         this.setState({ ...this.state, chosenProfile: key })
                     }
                 />
-                <WaTabs>
+                <WaTabs selectedTab={this.activeTab.current}>
                     {{
                         Страницы: (
                             <>

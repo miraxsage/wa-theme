@@ -16,6 +16,29 @@ class WaTabs extends Component {
             this.setState({ activeTab: newActiveTab });
     }
 
+    updateTab() {
+        if (typeof this.props.selectedTab == "number") {
+            const selectedTab = Number(this.props.selectedTab);
+            const tabNames = Object.keys(this.props.children);
+            if (
+                selectedTab >= 0 &&
+                Number(this.props.selectedTab) <= tabNames.length &&
+                this.state.activeTab != tabNames[selectedTab]
+            )
+                this.setState({
+                    ...this.state,
+                    activeTab: tabNames[selectedTab],
+                });
+        }
+    }
+
+    componentDidMount() {
+        this.updateTab();
+    }
+    componentDidUpdate() {
+        this.updateTab();
+    }
+
     render() {
         const { children, header, footer } = this.props;
         return (
