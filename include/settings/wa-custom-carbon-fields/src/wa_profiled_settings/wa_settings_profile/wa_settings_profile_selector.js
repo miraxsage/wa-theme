@@ -131,7 +131,7 @@ class WaSettingsProfileSelector extends Component {
                             this.modal(false)();
                             this.props.onSelect(key);
                         }}
-                        action={this.action}
+                        action={this.action.current}
                     />
                 </ReactModal>
                 <div className="wa-sidebars-profile-selector-container">
@@ -182,7 +182,8 @@ class WaSettingsProfileSelector extends Component {
                             </>
                         )}
                         Различные профили позволяют указывать различные
-                        настройки сайдбаров для выбранных условий (отдельных
+                        настройки сайдбаров, последовательности блоков,
+                        schema-атрибутов и пр. для выбранных условий (отдельных
                         страниц, категорий и т.д.)
                     </Info>
                 </div>

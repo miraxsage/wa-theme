@@ -4,7 +4,8 @@ import WaTabs from "../wa_tabs";
 import WaToggleButtonsList from "../wa_toggle_buttons_list";
 
 function SchemaSettings({ target, config, onChange }) {
-    const targetSingular = target.replace(/s$/, "");
+    let targetSingular = target.replace(/s$/, "");
+    targetSingular = targetSingular == "post" ? "record" : targetSingular;
     return (
         <div className={"wa-schema-container"}>
             <div className="cf-field cf-wa-html">
@@ -13,37 +14,51 @@ function SchemaSettings({ target, config, onChange }) {
                     элементов
                     {target == "pages"
                         ? "каждой страницы"
-                        : target == "records"
+                        : target == "posts"
                         ? "каждой записи"
                         : "каждого архива"}
                 </div>
             </div>
-            {Object.entries(config).map(([key, val]) => (
-                <div className="cf-field cf-wa-schema-info">
-                    <WaSchemaInfo
-                        id={target + "_schema__" + key}
-                        key={target + "_schema__" + key}
-                        value={val}
-                        field={{
-                            label: wa_common__profiled_settings_configs[
-                                targetSingular + "_schema__" + key
-                            ]["title"],
-                        }}
-                        onChange={(id, val) =>
-                            onChange(target + "_schema", {
-                                ...config,
-                                [key]: val,
-                            })
-                        }
-                    />
-                </div>
-            ))}
+            {Object.entries(config).map(([key, val]) => {
+                if (
+                    !wa_common__profiled_settings_configs[
+                        targetSingular + "_schema__" + key
+                    ]
+                )
+                    console.log(
+                        wa_common__profiled_settings_configs[
+                            targetSingular + "_schema__" + key
+                        ],
+                        targetSingular + "_schema__" + key
+                    );
+                return (
+                    <div className="cf-field cf-wa-schema-info">
+                        <WaSchemaInfo
+                            id={target + "_schema__" + key}
+                            key={target + "_schema__" + key}
+                            value={val}
+                            field={{
+                                label: wa_common__profiled_settings_configs[
+                                    targetSingular + "_schema__" + key
+                                ]["title"],
+                            }}
+                            onChange={(id, val) =>
+                                onChange(target + "_schema", {
+                                    ...config,
+                                    [key]: val,
+                                })
+                            }
+                        />
+                    </div>
+                );
+            })}
         </div>
     );
 }
 
 function SemanticsSettings({ target, config, onChange }) {
-    const targetSingular = target.replace(/s$/, "");
+    let targetSingular = target.replace(/s$/, "");
+    targetSingular = targetSingular == "post" ? "record" : targetSingular;
     return (
         <div className={"wa-semantics-container"}>
             <div className="cf-field cf-wa-html">
@@ -52,7 +67,7 @@ function SemanticsSettings({ target, config, onChange }) {
                     элементов
                     {target == "pages"
                         ? "каждой страницы"
-                        : target == "records"
+                        : target == "posts"
                         ? "каждой записи"
                         : "каждого архива"}
                 </div>
@@ -122,15 +137,17 @@ export function compileReorderedChoicesConfig(val, config) {
     return choices;
 }
 
-export default function WaProfiledPagesSettings({
+export default function WaProfiledTargetSettings({
     target = "pages",
     config,
+    style,
     onChange,
 }) {
     const onChangeHandler = (setting) => (id, newVal) => {
         onChange({ ...config, [setting]: newVal });
     };
-    const targetSingular = target.replace(/s$/, "");
+    let targetSingular = target.replace(/s$/, "");
+    targetSingular = targetSingular == "post" ? "record" : targetSingular;
     const reorderedChoices = compileReorderedChoicesConfig(
         config["blocks_sequence"],
         wa_common__profiled_settings_configs[
@@ -138,7 +155,7 @@ export default function WaProfiledPagesSettings({
         ]
     );
     return (
-        <WaTabs>
+        <WaTabs style={style}>
             {{
                 Последовательность: (
                     <WaAdvancedPillList
@@ -147,7 +164,7 @@ export default function WaProfiledPagesSettings({
                             description: `Укажите видимость и порядок следования блоков для ${
                                 target == "pages"
                                     ? "каждой страницы"
-                                    : target == "records"
+                                    : target == "posts"
                                     ? "каждой записи"
                                     : "каждого архива"
                             }`,

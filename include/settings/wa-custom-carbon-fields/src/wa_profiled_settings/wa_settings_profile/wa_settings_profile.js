@@ -38,10 +38,14 @@ class WaSettingsProfile extends Component {
         let catsPromise = load(
             "/wp-json/wp/v2/categories?_fields[]=name&_fields[]=id&_fields[]=description&_fields[]=slug"
         );
-        let [posts, pages, cats] = await Promise.all([
+        let tagsPromise = load(
+            "/wp-json/wp/v2/tags?_fields[]=name&_fields[]=id&_fields[]=description&_fields[]=slug"
+        );
+        let [posts, pages, cats, tags] = await Promise.all([
             postsPromise,
             pagesPromise,
             catsPromise,
+            tagsPromise,
         ]);
         window.wa.resources = {
             posts,
@@ -63,6 +67,7 @@ class WaSettingsProfile extends Component {
                 },
                 ...cats,
             ],
+            tags,
         };
         const event = new CustomEvent(
             "WaResources_Loaded",
@@ -194,7 +199,7 @@ class WaSettingsProfile extends Component {
                         {{
                             Записи: this.resourcesAccumulator("posts"),
                             Страницы: this.resourcesAccumulator("pages"),
-                            Архивы: this.resourcesAccumulator("cats"),
+                            Архивы: this.resourcesAccumulator("archives"),
                         }}
                     </WaTabs>
                     <div className="wa-sidebars-profile-buttons">

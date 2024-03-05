@@ -98,13 +98,13 @@ trait WaThemeSettingsConfig{
         $widgets_block_defaults = '{"visible":true, "lines": [{"width":null,"height":null,"margin":"- - - -","padding":"- - - -","bg":null,"topBorder":null,"bottomBorder":null,"items":[]}]}';
         $default_config = json_encode([
             "pages" => $this->config["page__profiled_settings"]["default"],
-            "records" => $this->config["record__profiled_settings"]["default"],
+            "posts" => $this->config["record__profiled_settings"]["default"],
             "archives" => $this->config["archive__profiled_settings"]["default"],
             "sidebars" => json_decode(sprintf('{"header":%1$s,"footer":%1$s,"inner_left":%1$s,"inner_right":%1$s,"outer_left":%1$s,"outer_right":%1$s}', $widgets_block_defaults)) 
         ]);
         $this->config["common__profiled_settings"] = [
             "type" => "profiled_settings",
-            "default" =>  '[{"profile": "Общий", "key": "common", "filter": {"posts": {"mode": "all", "ids": []}, "pages": {"mode": "all", "ids": []}, "cats": {"mode": "all", "ids": []}}, "config":'.$default_config.'}]',
+            "default" =>  '[{"profile": "Общий", "key": "common", "filter": {"posts": {"mode": "all", "ids": []}, "pages": {"mode": "all", "ids": []}, "archives": {"mode": "all", "ids": []}}, "config":'.$default_config.'}]',
             "title" => "",
             "description" => ""
         ];

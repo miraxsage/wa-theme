@@ -8,6 +8,7 @@ import WaFrameConfiguration from "./wa_frame_configuration";
 import WaSettingsProfileSelector from "./wa_settings_profile/wa_settings_profile_selector";
 import WaProfiledTargetSettings from "./wa_profiled_target_settings";
 import Info from "../info";
+import WaToggleCheckbox from "../wa_toggle_checkbox";
 
 class WaProfiledSettings extends Component {
     sidebars = [
@@ -60,7 +61,7 @@ class WaProfiledSettings extends Component {
         if (urlParams.has("target")) {
             const target = urlParams.get("target");
             if (target == "pages") this.activeTab.current = 0;
-            if (target == "records") this.activeTab.current = 1;
+            if (target == "posts") this.activeTab.current = 1;
             if (target == "archives") this.activeTab.current = 2;
         }
         this.state = { chosenProfile: "common" };
@@ -128,7 +129,7 @@ class WaProfiledSettings extends Component {
         this.config = newConfig;
         let newConfigJson = JSON.stringify(newConfig);
         if (newConfigJson != this.props.value)
-            this.props.onChange(this.props.id, JSON.stringify(newConfig));
+            this.props.onChange(this.props.id, newConfigJson);
         else this.setState({});
     }
 
@@ -145,7 +146,7 @@ class WaProfiledSettings extends Component {
         );
     }
     chosenProfile() {
-        return this.config.find((c) => c.key == this.state.chosenProfile);
+        return this.config.find((p) => p.key == this.state.chosenProfile);
     }
     openProfile(e) {
         e?.preventDefault?.();
@@ -157,37 +158,105 @@ class WaProfiledSettings extends Component {
         this.setState({ ...this.state });
     }
     settingsInfo(kind) {
-        const target =
+        const forKindLabel =
+            kind == "pages"
+                ? "страниц"
+                : kind == "posts"
+                ? "записей"
+                : "архивов";
+        const kindLabel =
             kind == "pages"
                 ? "страницам"
-                : kind == "records"
+                : kind == "posts"
                 ? "записям"
                 : "архивам";
         return (
-            <Info style={{ marginBottom: "10px" }}>
-                {kind == "widgets"
-                    ? "Настроенные ниже виджеты появятся на всех страницах, указанных в "
-                    : "Настройки ниже будут соответственно применены ко всем " +
-                      target +
-                      ", указанных в "}
-                <a
-                    href="admin.php?page=wa-profiled-settings.php&action=adjust-profile"
-                    onClick={this.openProfile}
+            <>
+                {kind != "widgets" && this.state.chosenProfile != "common" && (
+                    <WaToggleCheckbox
+                        value={this.chosenProfile().filter[kind].mode != "none"}
+                        onChange={(id, checked) =>
+                            this.onChange(
+                                this.config.map((p) =>
+                                    p.key == this.state.chosenProfile
+                                        ? {
+                                              ...p,
+                                              filter: {
+                                                  ...p.filter,
+                                                  [kind]: {
+                                                      mode: checked
+                                                          ? "all"
+                                                          : "none",
+                                                      ids: [],
+                                                  },
+                                              },
+                                          }
+                                        : p
+                                )
+                            )
+                        }
+                        field={{ label: "Настроить" }}
+                        withoutHeader={true}
+                        style={{ margin: "5px 0px 5px 0px" }}
+                    />
+                )}
+                <Info
+                    style={{
+                        marginTop:
+                            this.state.chosenProfile == "common"
+                                ? "0px"
+                                : "3px",
+                    }}
                 >
-                    настройках
-                </a>{" "}
-                выбранного профиля "{this.chosenProfile().profile}"
-            </Info>
+                    {kind != "widgets" &&
+                    this.chosenProfile().filter[kind].mode == "none" ? (
+                        'Настройки профиля "' +
+                        this.chosenProfile().profile +
+                        '" не активны для всех ' +
+                        forKindLabel
+                    ) : this.state.chosenProfile == "common" ? (
+                        <>
+                            {(kind == "widgets"
+                                ? "Настроенные ниже виджеты появятся на всех страницах"
+                                : "Настройки ниже будут соответственно применены ко всем " +
+                                  kindLabel) +
+                                ", для которых не определено других профилей, стоящих выше в "}
+                            <a
+                                href="admin.php?page=wa-profiled-settings.php&action=adjust-profile"
+                                onClick={this.openProfile}
+                            >
+                                списке
+                            </a>
+                        </>
+                    ) : (
+                        <>
+                            {kind == "widgets"
+                                ? "Настроенные ниже виджеты появятся на всех страницах, указанных в "
+                                : "Настройки ниже будут соответственно применены ко всем " +
+                                  kindLabel +
+                                  ", указанных в "}
+                            <a
+                                href="admin.php?page=wa-profiled-settings.php&action=adjust-profile"
+                                onClick={this.openProfile}
+                            >
+                                настройках
+                            </a>{" "}
+                            выбранного профиля "{this.chosenProfile().profile}",
+                            если в списке профилей выше не определено других
+                            подходящих
+                        </>
+                    )}
+                </Info>
+            </>
         );
     }
     render() {
         try {
             if (!this.config) this.config = JSON.parse(this.props.value);
-            c(this.config);
-            if (this.state.chosenProfile > this.config.length) {
+            if (!this.config.any((c) => c.key == this.state.chosenProfile)) {
                 this.setState({
                     ...this.state,
-                    chosenProfile: this.config.length - 1,
+                    chosenProfile: this.config[this.config.length - 1].key,
                 });
                 return;
             }
@@ -226,37 +295,33 @@ class WaProfiledSettings extends Component {
                 />
                 <WaTabs selectedTab={this.activeTab.current}>
                     {{
-                        Страницы: (
-                            <>
-                                {this.settingsInfo("pages")}
-                                <WaProfiledTargetSettings
-                                    target="pages"
-                                    config={profileConfig.pages}
-                                    onChange={this.onSettingsChanged("pages")}
-                                />
-                            </>
-                        ),
-                        Записи: (
-                            <>
-                                {this.settingsInfo("records")}
-                                <WaProfiledTargetSettings
-                                    target="records"
-                                    config={profileConfig.records}
-                                    onChange={this.onSettingsChanged("records")}
-                                />
-                            </>
-                        ),
-                        Архивы: (
-                            <>
-                                {this.settingsInfo("archives")}
-                                <WaProfiledTargetSettings
-                                    target="archives"
-                                    config={profileConfig.archives}
-                                    onChange={this.onSettingsChanged(
-                                        "archives"
-                                    )}
-                                />
-                            </>
+                        ...Object.fromEntries(
+                            [
+                                ["Записи", "posts"],
+                                ["Страницы", "pages"],
+                                ["Архивы", "archives"],
+                            ].map(([key, target]) => [
+                                key,
+                                <>
+                                    {this.settingsInfo(target)}
+                                    <WaProfiledTargetSettings
+                                        target={target}
+                                        config={profileConfig[target]}
+                                        onChange={this.onSettingsChanged(
+                                            target
+                                        )}
+                                        style={{
+                                            display:
+                                                this.chosenProfile().filter[
+                                                    target
+                                                ].mode == "none"
+                                                    ? "none"
+                                                    : "block",
+                                            marginTop: "10px",
+                                        }}
+                                    />
+                                </>,
+                            ])
                         ),
                         Виджеты: (
                             <>
