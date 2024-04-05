@@ -134,50 +134,65 @@ class WaSettingsProfileBar extends Component {
                         onClick={() => this.props.onCreate()}
                     />
                 </div>
-                <DragDropContext
-                    onDragEnd={this.onDragEnd}
-                    onDragUpdate={this.onDragUpdate}
-                    onDragStart={this.onDragStart}
-                >
-                    <Droppable droppableId="sidebars-profile-bar-droppable">
-                        {(provided, snapshot) => (
-                            <div
-                                className={classes("list", {
-                                    moving: this.state.movingItem,
-                                })}
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                {items.map((c, i) => (
-                                    <WaSettingsProfileBarItem
-                                        key={c.key}
-                                        index={i}
-                                        forbidden={
-                                            c.key ==
-                                            this.state.forbiddenedToMoveItem
-                                        }
-                                        active={
-                                            c.key == this.props.editingProfile
-                                        }
-                                        moving={c.key == this.state.movingItem}
-                                        config={c}
-                                        onEdit={() => this.props.onEdit(c.key)}
-                                        onDelete={() =>
-                                            this.props.onChange(
-                                                this.props.config.filter(
-                                                    (_c) => _c.key != c.key
+                <div className="priority-range-container">
+                    <div className="priority-range-title">
+                        <div className="priority-range-point"></div>
+                        высокий приоритет
+                    </div>
+                    <DragDropContext
+                        onDragEnd={this.onDragEnd}
+                        onDragUpdate={this.onDragUpdate}
+                        onDragStart={this.onDragStart}
+                    >
+                        <Droppable droppableId="sidebars-profile-bar-droppable">
+                            {(provided, snapshot) => (
+                                <div
+                                    className={classes("list", {
+                                        moving: this.state.movingItem,
+                                    })}
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                >
+                                    {items.map((c, i) => (
+                                        <WaSettingsProfileBarItem
+                                            key={c.key}
+                                            index={i}
+                                            forbidden={
+                                                c.key ==
+                                                this.state.forbiddenedToMoveItem
+                                            }
+                                            active={
+                                                c.key ==
+                                                this.props.editingProfile
+                                            }
+                                            moving={
+                                                c.key == this.state.movingItem
+                                            }
+                                            config={c}
+                                            onEdit={() =>
+                                                this.props.onEdit(c.key)
+                                            }
+                                            onDelete={() =>
+                                                this.props.onChange(
+                                                    this.props.config.filter(
+                                                        (_c) => _c.key != c.key
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                    <div className="priority-range-title">
+                        <div className="priority-range-point"></div>
+                        низкий приоритет
+                    </div>
+                </div>
                 <Info
                     type={items.length > 0 ? "info" : "warning"}
-                    style={{ width: "200px" }}
+                    style={{ width: "200px", padding: "7px 0px" }}
                 >
                     {items.length > 0 ? (
                         <>

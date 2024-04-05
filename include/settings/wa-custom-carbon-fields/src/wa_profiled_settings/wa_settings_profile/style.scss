@@ -152,3 +152,46 @@
     margin-top: 10px;
     width: max-content;
 }
+.priority-range-container {
+    padding-left: 10px;
+    position: relative;
+}
+.priority-range-container:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 1px;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    background-image: linear-gradient(180deg, #49cf60, #ff7676);
+}
+.priority-range-title {
+    display: flex;
+    font-style: italic;
+}
+.priority-range-title:first-child {
+    color: #68a773;
+    margin-bottom: 2px;
+}
+.priority-range-point {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px 0px 0px 0px;
+    border: 1px solid #49cf60;
+    border-width: 1px 0px 0px 1px;
+    position: relative;
+    left: -10px;
+    top: 5px;
+    align-self: center;
+}
+.priority-range-title:last-child {
+    color: #a54b4b;
+    margin-top: 2px;
+}
+.priority-range-title:last-child .priority-range-point {
+    border: 1px solid #ff7676;
+    border-width: 0px 0px 1px 1px;
+    border-radius: 0px 0px 0px 5px;
+    top: -5px;
+}

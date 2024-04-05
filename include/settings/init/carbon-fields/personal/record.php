@@ -10,38 +10,41 @@ Container::make("post_meta", "wa_record_settings", "WebArchitect настрой�
     ->add_tab("Последовательность", [
         $settings->get_personal_setting_control("record__blocks_sequence"),
     ])
-    ->add_tab("Schema", [
-        Field::make('wa_html', "record_schema__description")
-            ->set_mode("description")
-            ->set_html("Укажите значения Schema.org-атрибутов для соответствующих элементов каждой записи"),
-        $settings->get_personal_setting_control("record_schema__page_body"),
-        $settings->get_personal_setting_control("record_schema__theme_header"),
-        $settings->get_personal_setting_control("record_schema__theme_footer"),
-        $settings->get_personal_setting_control("record_schema__inner_left_sidebar"),
-        $settings->get_personal_setting_control("record_schema__inner_right_sidebar"),
-        $settings->get_personal_setting_control("record_schema__outer_left_sidebar"),
-        $settings->get_personal_setting_control("record_schema__outer_right_sidebar"),
-        $settings->get_personal_setting_control("record_schema__article_container"),
-        $settings->get_personal_setting_control("record_schema__content_section"),
-        $settings->get_personal_setting_control("record_schema__h1"),
-        $settings->get_personal_setting_control("record_schema__about_author")
-    ])
-    ->add_tab("Семантика", [
-        Field::make('wa_html', "record_semantics__description")
-            ->set_mode("description")
-            ->set_html("Укажите значения вариантов исполнения для соответствующих элементов каждой записи"),
-        $settings->get_personal_setting_control("record_semantics__theme_header"),
-        $settings->get_personal_setting_control("record_semantics__theme_footer"),
-        $settings->get_personal_setting_control("record_semantics__main_content"),
-        $settings->get_personal_setting_control("record_semantics__inner_left_sidebar"),
-        $settings->get_personal_setting_control("record_semantics__inner_right_sidebar"),
-        $settings->get_personal_setting_control("record_semantics__outer_left_sidebar"),
-        $settings->get_personal_setting_control("record_semantics__outer_right_sidebar"),
-        $settings->get_personal_setting_control("record_semantics__page_header"),
-        $settings->get_personal_setting_control("record_semantics__page_article"),
-        $settings->get_personal_setting_control("record_semantics__page_headline"),
-        $settings->get_personal_setting_control("record_semantics__page_headings")
-    ]);
+    //После введения профильных настроек непосредственно на странице поста / страницы 
+    //можно настроить только последовательность блоков, которая переопределяет все остальные настройки
+    // ->add_tab("Schema", [
+    //     Field::make('wa_html', "record_schema__description")
+    //         ->set_mode("description")
+    //         ->set_html("Укажите значения Schema.org-атрибутов для соответствующих элементов каждой записи"),
+    //     $settings->get_personal_setting_control("record_schema__page_body"),
+    //     $settings->get_personal_setting_control("record_schema__theme_header"),
+    //     $settings->get_personal_setting_control("record_schema__theme_footer"),
+    //     $settings->get_personal_setting_control("record_schema__inner_left_sidebar"),
+    //     $settings->get_personal_setting_control("record_schema__inner_right_sidebar"),
+    //     $settings->get_personal_setting_control("record_schema__outer_left_sidebar"),
+    //     $settings->get_personal_setting_control("record_schema__outer_right_sidebar"),
+    //     $settings->get_personal_setting_control("record_schema__article_container"),
+    //     $settings->get_personal_setting_control("record_schema__content_section"),
+    //     $settings->get_personal_setting_control("record_schema__h1"),
+    //     $settings->get_personal_setting_control("record_schema__about_author")
+    // ])
+    // ->add_tab("Семантика", [
+    //     Field::make('wa_html', "record_semantics__description")
+    //         ->set_mode("description")
+    //         ->set_html("Укажите значения вариантов исполнения для соответствующих элементов каждой записи"),
+    //     $settings->get_personal_setting_control("record_semantics__theme_header"),
+    //     $settings->get_personal_setting_control("record_semantics__theme_footer"),
+    //     $settings->get_personal_setting_control("record_semantics__main_content"),
+    //     $settings->get_personal_setting_control("record_semantics__inner_left_sidebar"),
+    //     $settings->get_personal_setting_control("record_semantics__inner_right_sidebar"),
+    //     $settings->get_personal_setting_control("record_semantics__outer_left_sidebar"),
+    //     $settings->get_personal_setting_control("record_semantics__outer_right_sidebar"),
+    //     $settings->get_personal_setting_control("record_semantics__page_header"),
+    //     $settings->get_personal_setting_control("record_semantics__page_article"),
+    //     $settings->get_personal_setting_control("record_semantics__page_headline"),
+    //     $settings->get_personal_setting_control("record_semantics__page_headings")
+    // ])
+    ;
 
 /*
 function record_semantics($name, $title, $descr, $keys){

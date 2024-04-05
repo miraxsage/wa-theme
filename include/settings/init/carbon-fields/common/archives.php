@@ -6,6 +6,8 @@ Container::make("theme_options", "wa_archives_settings", "Настройки а�
     ->set_page_file("wa-archives-settings.php")
     ->set_page_menu_title("Архивы")
     ->set_page_parent("wa-settings.php")
+    //После введения профильных настроек последовательность блоков, schema-артибуты и семантику можно 
+    //настроить только в профилях + последовательность на каждой странице / после отдельно 
     // ->add_tab("Последовательность", [
     //     Field::make('wa_active_tab_saver', "archives_active_tab_saver"),
     //     $settings->get_sync_setting_control("archive__blocks_sequence"),

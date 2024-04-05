@@ -295,38 +295,10 @@ class WaProfiledSettings extends Component {
                 />
                 <WaTabs selectedTab={this.activeTab.current}>
                     {{
-                        ...Object.fromEntries(
-                            [
-                                ["Записи", "posts"],
-                                ["Страницы", "pages"],
-                                ["Архивы", "archives"],
-                            ].map(([key, target]) => [
-                                key,
-                                <>
-                                    {this.settingsInfo(target)}
-                                    <WaProfiledTargetSettings
-                                        target={target}
-                                        config={profileConfig[target]}
-                                        onChange={this.onSettingsChanged(
-                                            target
-                                        )}
-                                        style={{
-                                            display:
-                                                this.chosenProfile().filter[
-                                                    target
-                                                ].mode == "none"
-                                                    ? "none"
-                                                    : "block",
-                                            marginTop: "10px",
-                                        }}
-                                    />
-                                </>,
-                            ])
-                        ),
                         Виджеты: (
                             <>
                                 {this.settingsInfo("widgets")}
-                                <WaTabs>
+                                <WaTabs style={{ marginTop: "10px" }}>
                                     {{
                                         Каркас: ({ onActiveTabChange }) => (
                                             <WaSidebarsFrames
@@ -366,6 +338,39 @@ class WaProfiledSettings extends Component {
                                     }}
                                 </WaTabs>
                             </>
+                        ),
+                    }}
+                </WaTabs>
+                <br />
+                <WaTabs selectedTab={this.activeTab.current}>
+                    {{
+                        ...Object.fromEntries(
+                            [
+                                ["Записи", "posts"],
+                                ["Страницы", "pages"],
+                                ["Архивы", "archives"],
+                            ].map(([key, target]) => [
+                                key,
+                                <>
+                                    {this.settingsInfo(target)}
+                                    <WaProfiledTargetSettings
+                                        target={target}
+                                        config={profileConfig[target]}
+                                        onChange={this.onSettingsChanged(
+                                            target
+                                        )}
+                                        style={{
+                                            display:
+                                                this.chosenProfile().filter[
+                                                    target
+                                                ].mode == "none"
+                                                    ? "none"
+                                                    : "block",
+                                            marginTop: "10px",
+                                        }}
+                                    />
+                                </>,
+                            ])
                         ),
                     }}
                 </WaTabs>

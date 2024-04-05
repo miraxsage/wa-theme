@@ -92,12 +92,13 @@ class WaSettingsProfile extends Component {
     }
     onCreateProfile() {
         let subObj = structuredClone(wa_common__profiled_settings_default);
-        let key = Math.floor(Math.random() * Date.now()).toString(16);
-        this.setState({ ...this.state, editingProfile: key });
-        this.props.onChange([
-            { ...subObj, profile: "Новый профиль", key: key },
-            ...this.props.config,
-        ]);
+        subObj.filter.pages.mode = "none";
+        subObj.filter.posts.mode = "none";
+        subObj.filter.archives.mode = "none";
+        subObj.profile = "Новый профиль";
+        subObj.key = Math.floor(Math.random() * Date.now()).toString(16);
+        this.setState({ ...this.state, editingProfile: subObj.key });
+        this.props.onChange([subObj, ...this.props.config]);
     }
     onChangeProfile(name, filter) {
         this.props.onChange(
@@ -192,7 +193,7 @@ class WaSettingsProfile extends Component {
                             className="wa-title"
                         >
                             Укажите настройки фильтров (для каких страниц будут
-                            использоваться сайдбары текущего профиля):
+                            использоваться виджеты и доп. настройки текущего профиля):
                         </div>
                     </div>
                     <WaTabs style={{ position: "relative", zIndex: "0" }}>

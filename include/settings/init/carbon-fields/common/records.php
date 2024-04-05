@@ -6,6 +6,8 @@ Container::make("theme_options", "wa_records_settings", "Настройки за
     ->set_page_file("wa-records-settings.php")
     ->set_page_menu_title("Записи")
     ->set_page_parent("wa-settings.php")
+    //После введения профильных настроек последовательность блоков, schema-артибуты и семантику можно 
+    //настроить только в профилях + последовательность на каждой странице / после отдельно 
     // ->add_tab("Последовательность", [
     //     Field::make('wa_active_tab_saver', "records_active_tab_saver"),
     //     $settings->get_sync_setting_control("record__blocks_sequence"),
