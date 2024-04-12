@@ -30,6 +30,16 @@ class WaTabs extends Component {
                     activeTab: tabNames[selectedTab],
                 });
         }
+        if (
+            typeof this.props.selectedTab == "string" &&
+            this.props.selectedTab in this.props.children &&
+            this.props.selectedTab != this.state.activeTab
+        ) {
+            this.setState({
+                ...this.state,
+                activeTab: this.props.selectedTab,
+            });
+        }
     }
 
     componentDidMount() {

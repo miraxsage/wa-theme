@@ -13,7 +13,7 @@ class WaSettingsProfileBarItem extends Component {
     render() {
         return (
             <Draggable
-                draggableId={`baritem${this.props.config.key}`}
+                draggableId={`bar-item-${this.props.config.key}`}
                 index={this.props.index}
             >
                 {(provided, snapshot) => (

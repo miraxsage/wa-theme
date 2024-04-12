@@ -5,6 +5,7 @@ import classes from "classnames";
 import WaWidgetSelector from "./wa_widget_selector";
 import IconButton from "../icon_button";
 import Info from "../info";
+import { generateId } from "../services";
 
 class WaWidgetsLine extends Component {
 
@@ -27,7 +28,7 @@ class WaWidgetsLine extends Component {
     }
 
     onAdd(){
-        this.props.onChange({...this.props.config, items: [...this.props.config.items, { key: Math.floor(Math.random() * Date.now()).toString(16) } ]});
+        this.props.onChange({...this.props.config, items: [...this.props.config.items, { key: generateId() } ]});
     }
 
     onDelete(){

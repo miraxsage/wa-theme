@@ -5,7 +5,8 @@ import IconButton from "../../icon_button/index.js";
 import "./style.scss";
 import WaSettingsProfileBar from "./wa_settings_profiles_bar.js";
 import WaTabs from "../../wa_tabs/index.js";
-import WaResourcesListAccumulator from "./wa_resources_list_accumulator.js";
+import WaFiltersConstructor from "./wa_filters_constructor.js";
+import { generateId } from "../../services.js";
 
 class WaSettingsProfile extends Component {
     effectQueue = [];
@@ -22,7 +23,8 @@ class WaSettingsProfile extends Component {
         this.onProfileDeleteQueryOutsideClick =
             this.onProfileDeleteQueryOutsideClick.bind(this);
         this.onChangeEditingProfile = this.onChangeEditingProfile.bind(this);
-        this.resourcesAccumulator = this.resourcesAccumulator.bind(this);
+        this.generateFiltersConstructor =
+            this.generateFiltersConstructor.bind(this);
     }
     async loadResources() {
         let load = async (link) => {
@@ -92,11 +94,8 @@ class WaSettingsProfile extends Component {
     }
     onCreateProfile() {
         let subObj = structuredClone(wa_common__profiled_settings_default);
-        subObj.filter.pages.mode = "none";
-        subObj.filter.posts.mode = "none";
-        subObj.filter.archives.mode = "none";
         subObj.profile = "Новый профиль";
-        subObj.key = Math.floor(Math.random() * Date.now()).toString(16);
+        subObj.key = generateId();
         this.setState({ ...this.state, editingProfile: subObj.key });
         this.props.onChange([subObj, ...this.props.config]);
     }
@@ -143,9 +142,9 @@ class WaSettingsProfile extends Component {
         if (!e.target.closest(".wa-sidebars-profile--delete-query-container"))
             this.setState({ deleteQuery: false });
     }
-    resourcesAccumulator(kind) {
+    generateFiltersConstructor(kind) {
         return (
-            <WaResourcesListAccumulator
+            <WaFiltersConstructor
                 kind={kind}
                 readOnly={this.editingProfile().key == "common"}
                 config={this.editingProfile().filter[kind]}
@@ -192,15 +191,17 @@ class WaSettingsProfile extends Component {
                             style={{ marginTop: "5px", marginBottom: "5px" }}
                             className="wa-title"
                         >
-                            Укажите настройки фильтров (для каких страниц будут
-                            использоваться виджеты и доп. настройки текущего профиля):
+                            Настройки фильтров:
                         </div>
                     </div>
-                    <WaTabs style={{ position: "relative", zIndex: "0" }}>
+                    <WaTabs
+                        selectedTab={this.props.selectedTab}
+                        style={{ position: "relative", zIndex: "0" }}
+                    >
                         {{
-                            Записи: this.resourcesAccumulator("posts"),
-                            Страницы: this.resourcesAccumulator("pages"),
-                            Архивы: this.resourcesAccumulator("archives"),
+                            Записи: this.generateFiltersConstructor("posts"),
+                            Страницы: this.generateFiltersConstructor("pages"),
+                            Архивы: this.generateFiltersConstructor("archives"),
                         }}
                     </WaTabs>
                     <div className="wa-sidebars-profile-buttons">

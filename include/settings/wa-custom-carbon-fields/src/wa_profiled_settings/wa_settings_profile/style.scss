@@ -4,42 +4,99 @@
     font-size: 13px;
     padding-right: 10px;
 }
-.wa-sidebars-profile-selector-container > .value,
-.wa-sidebars-profile-selector-container > .button {
-    padding: 4.5px 10px;
-    display: inline-block;
-    margin-top: 5px;
-    margin-right: 5px;
-    border-radius: 3px;
-    background: #effbeb;
-    color: #73a46e;
-    font-weight: 500;
-    border: 1px solid #bdd1ba;
+.cf-wa-profiled-settings,
+.wa-sidebars-profile {
+    .value,
+    .regular-icon-button {
+        font-size: 14px;
+        padding: 4.5px 10px;
+        display: inline-block;
+        margin-top: 5px;
+        margin-right: 5px;
+        border-radius: 4px;
+        background: #effbeb;
+        color: #73a46e;
+        font-weight: 500;
+        border: 1px solid #bdd1ba;
+    }
 }
 
-.wa-sidebars-profile-selector-container > .button {
-    font-weight: normal;
-    line-height: normal;
-    min-height: 0px;
-    padding: 4px 10px 3px 5px;
-    background: #ffffff;
-    border: 1px solid #c7c7c7;
-    color: #6b6b6b;
+.ml1 {
+    margin-left: 1px;
 }
-.wa-sidebars-profile-selector-container > .button:hover {
-    background: #f4faff;
-    border: 1px solid #b0c6d7;
-    color: #3a6a91;
+.ml2 {
+    margin-left: 2px;
 }
-.wa-sidebars-profile-selector-container > .button > .dashicons {
-    font-size: 18px;
-    margin: 0px 2px 0px 0px;
+.ml3 {
+    margin-left: 3px;
 }
-.wa-sidebars-profile-selector-container
-    > .button:not(:hover):not(:focus)
-    > .dashicons {
-    color: #c3c4c7;
+.ml4 {
+    margin-left: 4px;
 }
+.ml5 {
+    margin-left: 5px;
+}
+.mr1 {
+    margin-right: 1px;
+}
+.mr2 {
+    margin-right: 2px;
+}
+.mr3 {
+    margin-right: 3px;
+}
+.mr4 {
+    margin-right: 4px;
+}
+.mr5 {
+    margin-right: 5px;
+}
+
+.cf-wa-profiled-settings,
+.wa-sidebars-profile {
+    input {
+        border-color: #c3c4c7;
+    }
+    .regular-icon-button {
+        font-weight: normal;
+        line-height: normal;
+        min-height: 0px;
+        padding: 5px 10px 5px 5px;
+        background: #ffffff;
+        border: 1px solid #c7c7c7;
+        color: #414649;
+        &:hover {
+            background: #f4faff;
+            border: 1px solid #b0c6d7;
+            color: #3a6a91;
+        }
+        & > .dashicons {
+            font-size: 18px;
+            margin: 0px 2px 0px 0px;
+        }
+        &:not(:hover):not(:focus) > .dashicons {
+            color: #a7a7a7;
+            font-size: 18px;
+            margin: 0px 2px 0px 0px;
+        }
+    }
+}
+.wa-sidebars-profile-selector-container .regular-icon-button {
+    padding: 4px 10px 4px 5px;
+    color: #777c7f;
+    &:not(:hover):not(:focus) > .dashicons {
+        color: #bbbbbb;
+    }
+}
+// .wa-sidebars-profile {
+//     .button {
+//         color: #2c3338;
+//         border: 1px solid #8c8f94;
+//         &:not(:hover):not(:focus) > .dashicons {
+//             color: #555555;
+//         }
+//     }
+// }
 
 .wa-sidebars-profile {
     display: grid;
@@ -112,7 +169,7 @@
 }
 
 .wa-settings-profile-bar .header,
-.wa-resource-accumulator .header {
+.wa-filters-constructor .header {
     display: flex;
     align-items: center;
     gap: 3px;
@@ -187,11 +244,21 @@
 }
 .priority-range-title:last-child {
     color: #a54b4b;
-    margin-top: 2px;
+    margin-top: 1px;
 }
 .priority-range-title:last-child .priority-range-point {
     border: 1px solid #ff7676;
     border-width: 0px 0px 1px 1px;
     border-radius: 0px 0px 0px 5px;
     top: -5px;
+}
+
+.wa-filter-condition {
+    display: flex;
+    gap: 5px;
+}
+
+.flex-aligned-center {
+    display: flex;
+    align-items: center;
 }

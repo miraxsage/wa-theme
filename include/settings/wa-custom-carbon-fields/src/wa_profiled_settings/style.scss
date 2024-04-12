@@ -244,39 +244,6 @@
     transition: none;
 }
 
-.wa-resources-list {
-    display: grid;
-    gap: 7px;
-    grid-template-rows: auto 1fr;
-}
-.wa-resource-list-item {
-    border-bottom: 1px solid #efefef;
-    padding: 4px 5px 6px 7px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.wa-resource-list-item.active {
-    background: #2271b1;
-    border-bottom: 1px solid #2271b1;
-    color: white;
-}
-.wa-resource-list-item:not(.active):hover {
-    border-bottom: 1px solid #2271b1;
-    background: #f1faff;
-}
-.wa-resource-list-item-title {
-    font-weight: bold;
-}
-.wa-resource-list-item-descr {
-    font-style: italic;
-    font-size: 12px;
-    line-height: 14px;
-    color: #777474;
-}
-.wa-resource-list-item.active .wa-resource-list-item-descr {
-    color: #ebebeb;
-}
 .wa-widget-element {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -431,7 +398,14 @@
     font-size: 13px;
     text-align: justify;
     text-wrap: wrap;
-    line-height: 14px;
-    word-break: break-all;
+    line-height: 1.2;
+    // word-break: break-all;
     hyphens: auto;
+}
+.wa-settings-profile-bar .wa-info-text {
+    font-size: 12px;
+}
+.profile-mention {
+    color: #25971a;
+    font-weight: 600;
 }

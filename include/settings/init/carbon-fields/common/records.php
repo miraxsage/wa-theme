@@ -38,7 +38,11 @@ Container::make("theme_options", "wa_records_settings", "Настройки за
     ->add_tab("Дополнительно", [
         Field::make('wa_html', "record_additional")
             ->set_mode("description")
-            ->set_html("Дополнительные настройки последовательности блоков на странице, Schema и семантических атрибутов настраиваются в <a href=\"/wp-admin/admin.php?page=wa-profiled-settings.php&target=records\">разделе профилей</a>")
+            ->set_html("Следующие настройки для записей (а также страниц и архивов):<br/>
+            - последовательности блоков контента<br/>
+            - включение \ отключение и заполнение Schema.org<br/> 
+            - включение \ отключение html5 тегов (семантические теги)<br/>
+            осуществляются на в соответствующей <a href=\"/wp-admin/admin.php?page=wa-profiled-settings.php&target=posts\">вкладке</a> раздела «Виджеты и профили»")
             ->set_style("margin-bottom:5px;"),
     ])
     // ->add_tab("Schema", [

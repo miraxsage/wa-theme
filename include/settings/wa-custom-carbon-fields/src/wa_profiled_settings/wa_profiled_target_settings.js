@@ -20,17 +20,6 @@ function SchemaSettings({ target, config, onChange }) {
                 </div>
             </div>
             {Object.entries(config).map(([key, val]) => {
-                if (
-                    !wa_common__profiled_settings_configs[
-                        targetSingular + "_schema__" + key
-                    ]
-                )
-                    console.log(
-                        wa_common__profiled_settings_configs[
-                            targetSingular + "_schema__" + key
-                        ],
-                        targetSingular + "_schema__" + key
-                    );
                 return (
                     <div className="cf-field cf-wa-schema-info">
                         <WaSchemaInfo

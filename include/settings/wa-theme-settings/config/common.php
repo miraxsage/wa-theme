@@ -104,7 +104,7 @@ trait WaThemeSettingsConfig{
         ]);
         $this->config["common__profiled_settings"] = [
             "type" => "profiled_settings",
-            "default" =>  '[{"profile": "Общий", "key": "common", "filter": {"posts": {"mode": "all", "ids": []}, "pages": {"mode": "all", "ids": []}, "archives": {"mode": "all", "ids": []}}, "config":'.$default_config.'}]',
+            "default" =>  '[{"profile": "Общий", "key": "common", "filter": {"posts": null, "pages": null, "archives": null}, "config":'.$default_config.'}]',
             "title" => "",
             "description" => ""
         ];

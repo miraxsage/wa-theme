@@ -11,18 +11,10 @@ import Info from "../info";
 import WaToggleCheckbox from "../wa_toggle_checkbox";
 
 class WaProfiledSettings extends Component {
-    sidebars = [
-        "header",
-        "footer",
-        "inner_left",
-        "inner_right",
-        "outer_left",
-        "outer_right",
-    ];
+    sidebars = ["header", "footer", "inner_left", "inner_right", "outer_left", "outer_right"];
 
     checkStoreObj(store) {
-        if (!store || typeof store !== "object" || !(store instanceof Array))
-            return false;
+        if (!store || typeof store !== "object" || !(store instanceof Array)) return false;
         return true;
     }
 
@@ -33,16 +25,12 @@ class WaProfiledSettings extends Component {
             if (store[sbr].lines.length > 0) {
                 store[sbr].lines.forEach((ln, i) => {
                     if (!ln.key) {
-                        store[sbr].lines[i].key = Math.floor(
-                            Math.random() * Date.now()
-                        ).toString(16);
+                        store[sbr].lines[i].key = Math.floor(Math.random() * Date.now()).toString(16);
                         hasAbsentKeys = true;
                     }
                     ln.items.forEach((it, j) => {
                         if (!it.key) {
-                            store[sbr].lines[i].items[j].key = Math.floor(
-                                Math.random() * Date.now()
-                            ).toString(16);
+                            store[sbr].lines[i].items[j].key = Math.floor(Math.random() * Date.now()).toString(16);
                             hasAbsentKeys = true;
                         }
                     });
@@ -60,8 +48,8 @@ class WaProfiledSettings extends Component {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has("target")) {
             const target = urlParams.get("target");
-            if (target == "pages") this.activeTab.current = 0;
-            if (target == "posts") this.activeTab.current = 1;
+            if (target == "posts") this.activeTab.current = 0;
+            if (target == "pages") this.activeTab.current = 1;
             if (target == "archives") this.activeTab.current = 2;
         }
         this.state = { chosenProfile: "common" };
@@ -116,9 +104,7 @@ class WaProfiledSettings extends Component {
     }
     onChange(newConfig) {
         if (!newConfig.find((c) => c.key == this.state.chosenProfile)) {
-            let chosenIndex = this.config.findIndex(
-                (c) => c.key == this.state.chosenProfile
-            );
+            let chosenIndex = this.config.findIndex((c) => c.key == this.state.chosenProfile);
             if (chosenIndex > 0) chosenIndex--;
             else chosenIndex++;
             this.setState({
@@ -128,8 +114,7 @@ class WaProfiledSettings extends Component {
         }
         this.config = newConfig;
         let newConfigJson = JSON.stringify(newConfig);
-        if (newConfigJson != this.props.value)
-            this.props.onChange(this.props.id, newConfigJson);
+        if (newConfigJson != this.props.value) this.props.onChange(this.props.id, newConfigJson);
         else this.setState({});
     }
 
@@ -137,10 +122,7 @@ class WaProfiledSettings extends Component {
         return (
             <WaFrameConfiguration
                 name={frame_name}
-                config={
-                    this.config.find((c) => c.key == this.state.chosenProfile)
-                        .config.sidebars[frame_name]
-                }
+                config={this.config.find((c) => c.key == this.state.chosenProfile).config.sidebars[frame_name]}
                 onChange={this.onFrameConfigChanged(frame_name)}
             />
         );
@@ -148,33 +130,27 @@ class WaProfiledSettings extends Component {
     chosenProfile() {
         return this.config.find((p) => p.key == this.state.chosenProfile);
     }
-    openProfile(e) {
-        e?.preventDefault?.();
+    openProfile(eventOrTab) {
+        if (typeof eventOrTab == "object") eventOrTab?.preventDefault?.();
         this.action.current = (doAction) => {
-            doAction("openProfile");
+            doAction("openProfile", {
+                tab: typeof eventOrTab == "string" ? (eventOrTab == "posts" ? 0 : eventOrTab == "pages" ? 1 : 2) : null,
+            });
             this.action.current = null;
             this.setState({ ...this.state });
         };
         this.setState({ ...this.state });
     }
     settingsInfo(kind) {
-        const forKindLabel =
-            kind == "pages"
-                ? "страниц"
-                : kind == "posts"
-                ? "записей"
-                : "архивов";
-        const kindLabel =
-            kind == "pages"
-                ? "страницам"
-                : kind == "posts"
-                ? "записям"
-                : "архивам";
+        const forKindLabel = kind == "pages" ? "страниц" : kind == "posts" ? "записей" : "архивов";
+        const kindLabel = kind == "pages" ? "страницам" : kind == "posts" ? "записям" : "архивам";
+        const toOneKindLabel =
+            kind == "pages" ? "конкретной страницы" : kind == "posts" ? "конкретной записи" : "конкретного архива";
         return (
             <>
                 {kind != "widgets" && this.state.chosenProfile != "common" && (
                     <WaToggleCheckbox
-                        value={this.chosenProfile().filter[kind].mode != "none"}
+                        value={!!this.chosenProfile().filter[kind]}
                         onChange={(id, checked) =>
                             this.onChange(
                                 this.config.map((p) =>
@@ -183,12 +159,14 @@ class WaProfiledSettings extends Component {
                                               ...p,
                                               filter: {
                                                   ...p.filter,
-                                                  [kind]: {
-                                                      mode: checked
-                                                          ? "all"
-                                                          : "none",
-                                                      ids: [],
-                                                  },
+                                                  [kind]: checked
+                                                      ? [
+                                                            {
+                                                                mode: "all",
+                                                                ids: [],
+                                                            },
+                                                        ]
+                                                      : null,
                                               },
                                           }
                                         : p
@@ -202,25 +180,25 @@ class WaProfiledSettings extends Component {
                 )}
                 <Info
                     style={{
-                        marginTop:
-                            this.state.chosenProfile == "common"
-                                ? "0px"
-                                : "3px",
+                        marginTop: this.state.chosenProfile == "common" ? "0px" : "3px",
                     }}
                 >
-                    {kind != "widgets" &&
-                    this.chosenProfile().filter[kind].mode == "none" ? (
-                        'Настройки профиля "' +
-                        this.chosenProfile().profile +
-                        '" не активны для всех ' +
-                        forKindLabel
+                    {kind != "widgets" && !this.chosenProfile().filter[kind] && this.state.chosenProfile != "common" ? (
+                        'Настройки профиля "' + this.chosenProfile().profile + '" не активны для всех ' + forKindLabel
                     ) : this.state.chosenProfile == "common" ? (
                         <>
-                            {(kind == "widgets"
-                                ? "Настроенные ниже виджеты появятся на всех страницах"
-                                : "Настройки ниже будут соответственно применены ко всем " +
-                                  kindLabel) +
-                                ", для которых не определено других профилей, стоящих выше в "}
+                            {kind == "widgets" ? (
+                                <>
+                                    Настроенные ниже виджеты для <span className="profile-mention">"Общего"</span>{" "}
+                                    профиля появятся на всех страницах
+                                </>
+                            ) : (
+                                <>
+                                    Настройки ниже для <span className="profile-mention">"Общего"</span> профиля будут
+                                    применены ко всем {kindLabel}
+                                </>
+                            )}
+                            , для которых не определено других профилей, стоящих выше в{" "}
                             <a
                                 href="admin.php?page=wa-profiled-settings.php&action=adjust-profile"
                                 onClick={this.openProfile}
@@ -237,13 +215,16 @@ class WaProfiledSettings extends Component {
                                   ", указанных в "}
                             <a
                                 href="admin.php?page=wa-profiled-settings.php&action=adjust-profile"
-                                onClick={this.openProfile}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    this.openProfile(kind);
+                                }}
                             >
-                                настройках
+                                фильтрах
                             </a>{" "}
-                            выбранного профиля "{this.chosenProfile().profile}",
-                            если в списке профилей выше не определено других
-                            подходящих
+                            выбранного профиля{" "}
+                            {<span className="profile-mention">"{this.chosenProfile().profile}"</span>}, если в списке
+                            профилей выше не определено других подходящих для {toOneKindLabel}
                         </>
                     )}
                 </Info>
@@ -267,20 +248,13 @@ class WaProfiledSettings extends Component {
         } catch {}
         if (!this.checkStoreObj(this.config)) this.config = null;
         if (!this.config) return "state hasn`t been configured";
-        let profileConfig = this.config.find(
-            (p) => p.key == this.state.chosenProfile
-        ).config;
+        let profileConfig = this.config.find((p) => p.key == this.state.chosenProfile).config;
         const { id, name, value, field } = this.props;
         return (
-            <div
-                className={classes("wa-sidebar-configuration")}
-                ref={this.rootRef}
-            >
+            <div className={classes("wa-sidebar-configuration")} ref={this.rootRef}>
                 <input type="hidden" id={id} name={name} value={value} />
                 {field.description ? (
-                    <span className="wa-advanced-pill-list__description">
-                        {field.description}
-                    </span>
+                    <span className="wa-advanced-pill-list__description">{field.description}</span>
                 ) : (
                     ""
                 )}
@@ -289,59 +263,32 @@ class WaProfiledSettings extends Component {
                     config={this.config}
                     chosenProfile={this.state.chosenProfile}
                     onChange={this.onChange}
-                    onSelect={(key) =>
-                        this.setState({ ...this.state, chosenProfile: key })
-                    }
+                    onSelect={(key) => this.setState({ ...this.state, chosenProfile: key })}
                 />
-                <WaTabs selectedTab={this.activeTab.current}>
+                <div className="wa-title" style={{ margin: "10px 0px 0px 0px" }}>
+                    Виджеты:
+                </div>
+                {this.settingsInfo("widgets")}
+                <WaTabs style={{ marginTop: "10px" }}>
                     {{
-                        Виджеты: (
-                            <>
-                                {this.settingsInfo("widgets")}
-                                <WaTabs style={{ marginTop: "10px" }}>
-                                    {{
-                                        Каркас: ({ onActiveTabChange }) => (
-                                            <WaSidebarsFrames
-                                                config={profileConfig.sidebars}
-                                                onChange={this.onSettingsChanged(
-                                                    "sidebars"
-                                                )}
-                                                onSettingsClick={(frame_name) =>
-                                                    onActiveTabChange(
-                                                        frame_name
-                                                    )
-                                                }
-                                            />
-                                        ),
-                                        Header: this.frameConfigControl(
-                                            "header"
-                                        ),
-                                        Footer: this.frameConfigControl(
-                                            "footer"
-                                        ),
-                                        "Outer Left":
-                                            this.frameConfigControl(
-                                                "outer_left"
-                                            ),
-                                        "Outer Right":
-                                            this.frameConfigControl(
-                                                "outer_right"
-                                            ),
-                                        "Inner Left":
-                                            this.frameConfigControl(
-                                                "inner_left"
-                                            ),
-                                        "Inner Right":
-                                            this.frameConfigControl(
-                                                "inner_right"
-                                            ),
-                                    }}
-                                </WaTabs>
-                            </>
+                        Каркас: ({ onActiveTabChange }) => (
+                            <WaSidebarsFrames
+                                config={profileConfig.sidebars}
+                                onChange={this.onSettingsChanged("sidebars")}
+                                onSettingsClick={(frame_name) => onActiveTabChange(frame_name)}
+                            />
                         ),
+                        Header: this.frameConfigControl("header"),
+                        Footer: this.frameConfigControl("footer"),
+                        "Outer Left": this.frameConfigControl("outer_left"),
+                        "Outer Right": this.frameConfigControl("outer_right"),
+                        "Inner Left": this.frameConfigControl("inner_left"),
+                        "Inner Right": this.frameConfigControl("inner_right"),
                     }}
                 </WaTabs>
-                <br />
+                <div className="wa-title" style={{ margin: "10px 0px 3px 0px" }}>
+                    Дополнительные настройки:
+                </div>
                 <WaTabs selectedTab={this.activeTab.current}>
                     {{
                         ...Object.fromEntries(
@@ -356,14 +303,11 @@ class WaProfiledSettings extends Component {
                                     <WaProfiledTargetSettings
                                         target={target}
                                         config={profileConfig[target]}
-                                        onChange={this.onSettingsChanged(
-                                            target
-                                        )}
+                                        onChange={this.onSettingsChanged(target)}
                                         style={{
                                             display:
-                                                this.chosenProfile().filter[
-                                                    target
-                                                ].mode == "none"
+                                                !this.chosenProfile().filter[target] &&
+                                                this.state.chosenProfile != "common"
                                                     ? "none"
                                                     : "block",
                                             marginTop: "10px",

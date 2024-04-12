@@ -23,9 +23,7 @@ class WaSettingsProfileSelector extends Component {
     }
 
     onModalSizeChanged() {
-        let menuW = document
-            .getElementById("adminmenuwrap")
-            .getBoundingClientRect().width;
+        let menuW = document.getElementById("adminmenuwrap").getBoundingClientRect().width;
         let modalW = this.modalRef?.getBoundingClientRect().width ?? 500;
         let winW = document.body.clientWidth;
         let modalL = (winW - menuW) / 2 - modalW / 2 + menuW;
@@ -49,11 +47,11 @@ class WaSettingsProfileSelector extends Component {
     componentDidUpdate() {
         this.onModalSizeChanged();
         if (typeof this.props.action == "function") {
-            this.props.action((action) => {
-                if (action == "openProfile" && !this.state.modalIsShown)
-                    this.modal(true)();
+            this.props.action((action, params) => {
+                this.actionParams = params;
+                if (action == "openProfile" && !this.state.modalIsShown) this.modal(true)();
             });
-        }
+        } else delete this.actionParams;
     }
 
     modal(show) {
@@ -90,9 +88,7 @@ class WaSettingsProfileSelector extends Component {
                             position: "absolute",
                             left: this.state.modalLeft + "px",
                             maxWidth: "1000px",
-                            width: `calc(100% - ${
-                                this.state.menuWidth + 100
-                            }px)`,
+                            width: `calc(100% - ${this.state.menuWidth + 100}px)`,
                             height: `calc(100% - 214px)`,
                             maxHeight: "1000px",
                         },
@@ -100,8 +96,7 @@ class WaSettingsProfileSelector extends Component {
                     overlayRef={(node) => {
                         if (node) {
                             node.addEventListener("click", (e) => {
-                                if (!e.target.closest(".ReactModal__Content"))
-                                    this.modal(false)();
+                                if (!e.target.closest(".ReactModal__Content")) this.modal(false)();
                             });
                         }
                     }}
@@ -112,20 +107,18 @@ class WaSettingsProfileSelector extends Component {
                     isOpen={this.state.modalIsShown}
                 >
                     <div className="wa-modal-title">
-                        Выберите (настройте) профиль
-                        <button
-                            type="button"
-                            className="wa-modal-close"
-                            onClick={this.modal(false)}
-                        >
+                        Выберите профиль для редактирования
+                        <button type="button" className="wa-modal-close" onClick={this.modal(false)}>
                             <span class="dashicons dashicons-plus-alt2"></span>
                         </button>
                     </div>
                     <WaSettingsProfile
+                        selectedTab={this.actionParams?.tab}
                         config={this.props.config}
                         chosenProfile={this.props.chosenProfile}
                         onChange={(newConfig) => {
                             this.props.onChange(newConfig);
+                            if (newConfig.length == 1) this.setState({ ...this.state, modalIsShown: false });
                         }}
                         onSelect={(key) => {
                             this.modal(false)();
@@ -137,26 +130,29 @@ class WaSettingsProfileSelector extends Component {
                 <div className="wa-sidebars-profile-selector-container">
                     <span className="title">Профиль:</span>
                     <div className="value">
-                        {
-                            this.props.config.find(
-                                (c) => c.key == this.props.chosenProfile
-                            )?.profile
-                        }
+                        {this.props.config.find((c) => c.key == this.props.chosenProfile)?.profile}
                     </div>
-                    <button
-                        type="button"
-                        className="button"
-                        onClick={this.modal(true)}
-                    >
-                        <span class="dashicons dashicons-admin-generic"></span>
-                        Настройка / Переключение
-                    </button>
-                    <button
-                        type="button"
-                        className="button"
-                        onClick={this.createNewProfile}
-                    >
-                        <span class="dashicons dashicons-plus-alt2"></span>
+                    {this.props.config && this.props.config.length > 1 && (
+                        <button type="button" className="button regular-icon-button" onClick={this.modal(true)}>
+                            <span
+                                class="dashicons dashicons-admin-generic"
+                                style={{
+                                    position: "relative",
+                                    top: "0.5px",
+                                    marginRight: "2px",
+                                }}
+                            ></span>
+                            Настройка / Переключение
+                        </button>
+                    )}
+                    <button type="button" className="button regular-icon-button" onClick={this.createNewProfile}>
+                        <span
+                            class="dashicons dashicons-plus-alt2"
+                            style={{
+                                position: "relative",
+                                inset: "1px 0px 0px -1px",
+                            }}
+                        ></span>
                         Добавить новый
                     </button>
                     <Info
@@ -168,8 +164,7 @@ class WaSettingsProfileSelector extends Component {
                     >
                         {this.props.chosenProfile == "common" && (
                             <>
-                                Настройки "общего" профиля применяются ко всем
-                                разделам по умолчанию. <br />
+                                Настройки "общего" профиля применяются ко всем разделам по умолчанию. <br />
                                 Для выборочных и более тонких настроек{" "}
                                 <a
                                     href="admin.php?page=wa-profiled-settings.php&action=create-profile"
@@ -181,10 +176,8 @@ class WaSettingsProfileSelector extends Component {
                                 <div style={{ height: "5px" }}></div>
                             </>
                         )}
-                        Различные профили позволяют указывать различные
-                        настройки сайдбаров, последовательности блоков,
-                        schema-атрибутов и пр. для выбранных условий (отдельных
-                        страниц, категорий и т.д.)
+                        Различные профили позволяют указывать различные настройки сайдбаров, последовательности блоков,
+                        schema-атрибутов и пр. для выбранных условий (отдельных страниц, категорий и т.д.)
                     </Info>
                 </div>
             </>
