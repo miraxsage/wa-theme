@@ -37,7 +37,7 @@ $cur_args = ['section' => 'wa_common', 'container' => 'common_breadcrumbs__conta
     init_customizer_divider($customizer, 'common_breadcrumbs__divider', $cur_args["section"], $cur_args["container"]);
 
 $cur_args = ['section' => 'wa_common'];
-init_customizer_setting($customizer, 'common__pagination_use_nav', $cur_args);
-init_customizer_setting($customizer, 'common__expand_content_titles', $cur_args);
-init_customizer_setting($customizer, 'common__code_at_head_end', $cur_args);
-init_customizer_setting($customizer, 'common__code_at_body_end', $cur_args);
+    init_customizer_setting($customizer, 'common__pagination_use_nav', $cur_args);
+    init_customizer_setting($customizer, 'common__expand_content_titles', $cur_args);
+    init_customizer_setting($customizer, 'common__code_at_head_end', $cur_args);
+    init_customizer_setting($customizer, 'common__code_at_body_end', $cur_args);

@@ -1,9 +1,9 @@
 <?php
 $customizer->add_section('wa_records',  array('title' => 'Записи', 'panel' => 'webarch'));
 
-init_customizer_container($customizer, 'record_blocks_sequence__container', 'Последовательность блоков', 'wa_records');
-$cur_args = ['section' => 'wa_records', 'container' => 'record_blocks_sequence__container'];
-    init_customizer_setting($customizer, 'record__blocks_sequence', $cur_args);
+// init_customizer_container($customizer, 'record_blocks_sequence__container', 'Последовательность блоков', 'wa_records');
+// $cur_args = ['section' => 'wa_records', 'container' => 'record_blocks_sequence__container'];
+//     init_customizer_setting($customizer, 'record__blocks_sequence', $cur_args);
 
 init_customizer_container($customizer, 'record_meta__container', 'Мета-данные записи', 'wa_records');
 $cur_args = ['section' => 'wa_records', 'container' => 'record_meta__container'];
@@ -32,32 +32,49 @@ $cur_args = ['section' => 'wa_records', 'container' => 'record_similar_records__
     init_customizer_setting($customizer, 'record_similar__img_outside', $cur_args);
     init_customizer_setting($customizer, 'record_similar__blocks_sequence', $cur_args);
 
-init_customizer_container($customizer, 'record_schema__container', 'Schema.org', 'wa_records',
-    'Укажите значения Schema.org-атрибутов для соответствующих элементов каждой записи');
-$cur_args = ['section' => 'wa_records', 'container' => 'record_schema__container'];
-    init_customizer_setting($customizer, 'record_schema__page_body', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__theme_footer', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__inner_left_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__inner_right_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__outer_left_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__outer_right_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__article_container', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__content_section', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__h1', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__theme_header', $cur_args);
-    init_customizer_setting($customizer, 'record_schema__about_author', $cur_args);
+init_customizer_container($customizer, 'record_additional__container', 'Расширенные настройки', 'wa_records');
+$cur_args = ['section' => 'wa_records', 'container' => 'record_additional__container'];
+    $customizer->add_setting("record_additional__redirect_descr", ["default" => ""]);
+    $customizer->add_control(new WebArch_HTML_Control($customizer, "record_additional__redirect_descr",
+    array_merge(
+        $cur_args,
+        [
+            'content' => <<<CODE
+            Следующие настройки для записей (а также страниц и архивов):<br/>
+            - последовательности блоков контента<br/>
+            - включение \ отключение и заполнение Schema.org<br/> 
+            - включение \ отключение html5 тегов (семантические теги)<br/>
+            осуществляются на в соответствующей <a href="/wp-admin/admin.php?page=wa-profiled-settings.php&target=posts">вкладке</a> раздела «Виджеты и профили»
+    CODE
+        ]))
+    );
 
-init_customizer_container($customizer, 'record_semantics__container', 'Семантика', 'wa_records',
-    'Укажите значения вариантов исполнения для соответствующих элементов каждой записи');
-$cur_args = ['section' => 'wa_records', 'container' => 'record_semantics__container'];
-    init_customizer_setting($customizer, 'record_semantics__theme_header', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__theme_footer', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__main_content', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__inner_left_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__inner_right_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__outer_left_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__outer_right_sidebar', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__page_article', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__page_header', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__page_headline', $cur_args);
-    init_customizer_setting($customizer, 'record_semantics__page_headings', $cur_args);
+// init_customizer_container($customizer, 'record_schema__container', 'Schema.org', 'wa_records',
+//     'Укажите значения Schema.org-атрибутов для соответствующих элементов каждой записи');
+// $cur_args = ['section' => 'wa_records', 'container' => 'record_schema__container'];
+//     init_customizer_setting($customizer, 'record_schema__page_body', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__theme_footer', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__inner_left_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__inner_right_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__outer_left_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__outer_right_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__article_container', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__content_section', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__h1', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__theme_header', $cur_args);
+//     init_customizer_setting($customizer, 'record_schema__about_author', $cur_args);
+
+// init_customizer_container($customizer, 'record_semantics__container', 'Семантика', 'wa_records',
+//     'Укажите значения вариантов исполнения для соответствующих элементов каждой записи');
+// $cur_args = ['section' => 'wa_records', 'container' => 'record_semantics__container'];
+//     init_customizer_setting($customizer, 'record_semantics__theme_header', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__theme_footer', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__main_content', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__inner_left_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__inner_right_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__outer_left_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__outer_right_sidebar', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__page_article', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__page_header', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__page_headline', $cur_args);
+//     init_customizer_setting($customizer, 'record_semantics__page_headings', $cur_args);

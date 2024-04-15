@@ -20,35 +20,22 @@ class WaSettingsProfile extends Component {
         this.onChangeProfile = this.onChangeProfile.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onProfileDelete = this.onProfileDelete.bind(this);
-        this.onProfileDeleteQueryOutsideClick =
-            this.onProfileDeleteQueryOutsideClick.bind(this);
+        this.onProfileDeleteQueryOutsideClick = this.onProfileDeleteQueryOutsideClick.bind(this);
         this.onChangeEditingProfile = this.onChangeEditingProfile.bind(this);
-        this.generateFiltersConstructor =
-            this.generateFiltersConstructor.bind(this);
+        this.generateFiltersConstructor = this.generateFiltersConstructor.bind(this);
     }
     async loadResources() {
         let load = async (link) => {
             let res = await fetch(link);
             return res.json();
         };
-        let postsPromise = load(
-            "/wp-json/wp/v2/posts?_fields[]=title&_fields[]=id&_fields[]=modified&_fields[]=slug"
-        );
-        let pagesPromise = load(
-            "/wp-json/wp/v2/pages?_fields[]=title&_fields[]=id&_fields[]=modified&_fields[]=slug"
-        );
+        let postsPromise = load("/wp-json/wp/v2/posts?_fields[]=title&_fields[]=id&_fields[]=modified&_fields[]=slug");
+        let pagesPromise = load("/wp-json/wp/v2/pages?_fields[]=title&_fields[]=id&_fields[]=modified&_fields[]=slug");
         let catsPromise = load(
             "/wp-json/wp/v2/categories?_fields[]=name&_fields[]=id&_fields[]=description&_fields[]=slug"
         );
-        let tagsPromise = load(
-            "/wp-json/wp/v2/tags?_fields[]=name&_fields[]=id&_fields[]=description&_fields[]=slug"
-        );
-        let [posts, pages, cats, tags] = await Promise.all([
-            postsPromise,
-            pagesPromise,
-            catsPromise,
-            tagsPromise,
-        ]);
+        let tagsPromise = load("/wp-json/wp/v2/tags?_fields[]=name&_fields[]=id&_fields[]=description&_fields[]=slug");
+        let [posts, pages, cats, tags] = await Promise.all([postsPromise, pagesPromise, catsPromise, tagsPromise]);
         window.wa.resources = {
             posts,
             pages: [
@@ -71,16 +58,11 @@ class WaSettingsProfile extends Component {
             ],
             tags,
         };
-        const event = new CustomEvent(
-            "WaResources_Loaded",
-            window.wa.resources
-        );
+        const event = new CustomEvent("WaResources_Loaded", window.wa.resources);
         document.dispatchEvent(event);
     }
     editingProfile() {
-        return this.props.config.find(
-            (c) => c.key == this.state.editingProfile
-        );
+        return this.props.config.find((c) => c.key == this.state.editingProfile);
     }
     componentDidMount() {
         if (!window.wa) window.wa = {};
@@ -117,9 +99,7 @@ class WaSettingsProfile extends Component {
     }
     onChange(newConfig) {
         if (!newConfig.find((c) => c.key == this.state.editingProfile)) {
-            let editingIndex = this.props.config.findIndex(
-                (c) => c.key == this.state.editingProfile
-            );
+            let editingIndex = this.props.config.findIndex((c) => c.key == this.state.editingProfile);
             if (editingIndex > 0) editingIndex--;
             else editingIndex++;
             this.setState({
@@ -130,17 +110,11 @@ class WaSettingsProfile extends Component {
         this.props.onChange(newConfig);
     }
     onProfileDelete(forced = false) {
-        if (forced)
-            this.onChange(
-                this.props.config.filter(
-                    (_c) => _c.key != this.state.editingProfile
-                )
-            );
+        if (forced) this.onChange(this.props.config.filter((_c) => _c.key != this.state.editingProfile));
         this.setState({ deleteQuery: !forced });
     }
     onProfileDeleteQueryOutsideClick(e) {
-        if (!e.target.closest(".wa-sidebars-profile--delete-query-container"))
-            this.setState({ deleteQuery: false });
+        if (!e.target.closest(".wa-sidebars-profile--delete-query-container")) this.setState({ deleteQuery: false });
     }
     generateFiltersConstructor(kind) {
         return (
@@ -170,34 +144,21 @@ class WaSettingsProfile extends Component {
                 />
                 <div className="wa-sidebars-profile-content">
                     <div>
-                        <div
-                            className="wa-title"
-                            style={{ marginBottom: "5px" }}
-                        >
+                        <div className="wa-title" style={{ marginBottom: "5px" }}>
                             Наименование профиля:
                         </div>
                         <input
                             type="text"
-                            {...(this.editingProfile().key == "common"
-                                ? { readOnly: true }
-                                : {})}
+                            {...(this.editingProfile().key == "common" ? { readOnly: true } : {})}
                             value={this.editingProfile().profile}
-                            onChange={(e) =>
-                                this.onChangeProfile(e.target.value)
-                            }
+                            onChange={(e) => this.onChangeProfile(e.target.value)}
                             style={{ width: "100%" }}
                         />
-                        <div
-                            style={{ marginTop: "5px", marginBottom: "5px" }}
-                            className="wa-title"
-                        >
+                        <div style={{ marginTop: "5px", marginBottom: "5px" }} className="wa-title">
                             Настройки фильтров:
                         </div>
                     </div>
-                    <WaTabs
-                        selectedTab={this.props.selectedTab}
-                        style={{ position: "relative", zIndex: "0" }}
-                    >
+                    <WaTabs selectedTab={this.props.selectedTab} style={{ position: "relative", zIndex: "0" }}>
                         {{
                             Записи: this.generateFiltersConstructor("posts"),
                             Страницы: this.generateFiltersConstructor("pages"),
@@ -206,49 +167,34 @@ class WaSettingsProfile extends Component {
                     </WaTabs>
                     <div className="wa-sidebars-profile-buttons">
                         {this.state.editingProfile != "common" && (
-                            <button
-                                className="button button-error"
-                                onClick={() => this.onProfileDelete()}
-                            >
-                                Удалить
+                            <button className="button button-error" onClick={() => this.onProfileDelete()}>
+                                Удалить текущий профиль
                             </button>
                         )}
                         <button
                             className="button button-primary"
-                            onClick={() =>
-                                this.props.onSelect(this.state.editingProfile)
-                            }
+                            onClick={() => this.props.onSelect(this.state.editingProfile)}
                         >
                             Выбрать для настройки виджетов
                         </button>
                     </div>
                 </div>
                 {this.state.deleteQuery && (
-                    <div
-                        className="wa-sidebars-profile--delete-query"
-                        onClick={this.onProfileDeleteQueryOutsideClick}
-                    >
+                    <div className="wa-sidebars-profile--delete-query" onClick={this.onProfileDeleteQueryOutsideClick}>
                         <div className="wa-sidebars-profile--delete-query-container">
                             <Info>
-                                Вы действительно хотите удалить профиль "
-                                {this.editingProfile().profile}"?
+                                Вы действительно хотите удалить профиль "{this.editingProfile().profile}"?
                                 <br />
-                                Вместе с ним будут удалены все связанные
-                                настройки фильтров страниц и настройки
+                                Вместе с ним будут удалены все связанные настройки фильтров страниц и настройки
                                 связанного набора сайдбаров и их виджетов...
                             </Info>
                             <div className="wa-sidebars-profile-buttons">
-                                <button
-                                    className="button button-error"
-                                    onClick={() => this.onProfileDelete(true)}
-                                >
+                                <button className="button button-error" onClick={() => this.onProfileDelete(true)}>
                                     Удалить
                                 </button>
                                 <button
                                     className="button button-primary"
-                                    onClick={() =>
-                                        this.setState({ deleteQuery: false })
-                                    }
+                                    onClick={() => this.setState({ deleteQuery: false })}
                                 >
                                     Отмена
                                 </button>

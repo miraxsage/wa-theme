@@ -1048,6 +1048,31 @@ if (class_exists('WP_Customize_Control')) {
 		}
 	}
 
+	class WebArch_HTML_Control extends WebArch_Custom_Control {
+		/**
+		 * The type of control being rendered
+		 */
+		public $type = 'html';
+		/**
+		 * Constructor
+		 */
+		public function __construct($manager, $id, $args = array(), $options = array()) {
+			parent::__construct($manager, $id, $args);
+			if(array_key_exists("content", $args))
+				$this->content = $args["content"];
+		}
+		public function enqueue() {
+
+		}
+		/**
+		 * Render the control in the customizer
+		 */
+		public function render_content() {
+			 if($this->content)
+			 	echo $this->content;
+		}
+	}
+
 	/**
 	 * Sortable Pill Checkbox Custom Control
 	 *
