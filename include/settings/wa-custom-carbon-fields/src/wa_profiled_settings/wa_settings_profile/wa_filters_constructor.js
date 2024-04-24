@@ -112,10 +112,13 @@ class WaFiltersConstructor extends Component {
                                                                 filters.map((oldf) => (oldf.id == f.id ? newf : oldf))
                                                             )
                                                         }
-                                                        onDelete={() =>
-                                                            this.props.onChange?.(
-                                                                filters.filter((delf) => f.id != delf.id)
-                                                            )
+                                                        onDelete={
+                                                            filters.length == 1
+                                                                ? undefined
+                                                                : () =>
+                                                                      this.props.onChange?.(
+                                                                          filters.filter((delf) => f.id != delf.id)
+                                                                      )
                                                         }
                                                     />
                                                 </div>

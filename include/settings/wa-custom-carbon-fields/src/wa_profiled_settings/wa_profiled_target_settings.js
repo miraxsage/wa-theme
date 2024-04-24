@@ -1,4 +1,5 @@
 import WaAdvancedPillList from "../wa_advanced_pill_list";
+import WaBlocksSequence from "../wa_blocks_sequence";
 import WaSchemaInfo from "../wa_schema_info";
 import WaTabs from "../wa_tabs";
 import WaToggleButtonsList from "../wa_toggle_buttons_list";
@@ -10,13 +11,8 @@ function SchemaSettings({ target, config, onChange }) {
         <div className={"wa-schema-container"}>
             <div className="cf-field cf-wa-html">
                 <div className="wa-html wa-html--description cf-field__help">
-                    Укажите значения Schema.org-атрибутов для соответствующих
-                    элементов
-                    {target == "pages"
-                        ? "каждой страницы"
-                        : target == "posts"
-                        ? "каждой записи"
-                        : "каждого архива"}
+                    Укажите значения Schema.org-атрибутов для соответствующих элементов
+                    {target == "pages" ? "каждой страницы" : target == "posts" ? "каждой записи" : "каждого архива"}
                 </div>
             </div>
             {Object.entries(config).map(([key, val]) => {
@@ -27,9 +23,9 @@ function SchemaSettings({ target, config, onChange }) {
                             key={target + "_schema__" + key}
                             value={val}
                             field={{
-                                label: wa_common__profiled_settings_configs[
-                                    targetSingular + "_schema__" + key
-                                ]["title"],
+                                label: wa_common__profiled_settings_configs[targetSingular + "_schema__" + key][
+                                    "title"
+                                ],
                             }}
                             onChange={(id, val) =>
                                 onChange(target + "_schema", {
@@ -52,13 +48,8 @@ function SemanticsSettings({ target, config, onChange }) {
         <div className={"wa-semantics-container"}>
             <div className="cf-field cf-wa-html">
                 <div className="wa-html wa-html--description cf-field__help">
-                    Укажите значения вариантов исполнения для соответствующих
-                    элементов
-                    {target == "pages"
-                        ? "каждой страницы"
-                        : target == "posts"
-                        ? "каждой записи"
-                        : "каждого архива"}
+                    Укажите значения вариантов исполнения для соответствующих элементов
+                    {target == "pages" ? "каждой страницы" : target == "posts" ? "каждой записи" : "каждого архива"}
                 </div>
             </div>
             {Object.entries(config).map(([key, val]) => (
@@ -68,13 +59,11 @@ function SemanticsSettings({ target, config, onChange }) {
                         key={target + "_semantics__" + key}
                         value={val}
                         field={{
-                            label: wa_common__profiled_settings_configs[
-                                targetSingular + "_semantics__" + key
-                            ]["title"],
+                            label: wa_common__profiled_settings_configs[targetSingular + "_semantics__" + key]["title"],
                             description:
-                                wa_common__profiled_settings_configs[
-                                    targetSingular + "_semantics__" + key
-                                ]["description"],
+                                wa_common__profiled_settings_configs[targetSingular + "_semantics__" + key][
+                                    "description"
+                                ],
                             mode: "radio",
                             buttons: JSON.stringify(
                                 val.split(",").map((pair) => {
@@ -103,17 +92,25 @@ function SemanticsSettings({ target, config, onChange }) {
 export function compileReorderedChoicesConfig(val, config) {
     const savedChoices = val.split(",");
     const choices = {};
+
     for (const choice of savedChoices) {
         const [key, val] = choice.split(":");
         const checked = !!Number(val);
-        if (key in config["choices"]) {
-            if (typeof config["choices"][key] == "object")
-                choices[key] = { ...config["choices"][key], checked };
-            else
+        let keyMatch = null;
+        if (key in config["choices"] || (keyMatch = key.match(/^block_(\d+)$/))) {
+            if (keyMatch) {
                 choices[key] = {
-                    label: String(config["choices"][key]),
-                    checked: checked,
+                    label: "Блок " + keyMatch[1],
+                    checked,
                 };
+            } else {
+                if (typeof config["choices"][key] == "object") choices[key] = { ...config["choices"][key], checked };
+                else
+                    choices[key] = {
+                        label: String(config["choices"][key]),
+                        checked,
+                    };
+            }
         }
     }
     for (const key in config["choices"]) {
@@ -126,28 +123,21 @@ export function compileReorderedChoicesConfig(val, config) {
     return choices;
 }
 
-export default function WaProfiledTargetSettings({
-    target = "pages",
-    config,
-    style,
-    onChange,
-}) {
+export default function WaProfiledTargetSettings({ target = "pages", config, style, onChange }) {
     const onChangeHandler = (setting) => (id, newVal) => {
         onChange({ ...config, [setting]: newVal });
     };
     let targetSingular = target.replace(/s$/, "");
     targetSingular = targetSingular == "post" ? "record" : targetSingular;
     const reorderedChoices = compileReorderedChoicesConfig(
-        config["blocks_sequence"],
-        wa_common__profiled_settings_configs[
-            targetSingular + "__blocks_sequence"
-        ]
+        JSON.parse(config["blocks_sequence"]).sequence,
+        wa_common__profiled_settings_configs[targetSingular + "__blocks_sequence"]
     );
     return (
         <WaTabs style={style}>
             {{
                 Последовательность: (
-                    <WaAdvancedPillList
+                    <WaBlocksSequence
                         field={{
                             label: "Последовательность блоков",
                             description: `Укажите видимость и порядок следования блоков для ${
@@ -163,13 +153,7 @@ export default function WaProfiledTargetSettings({
                         onChange={onChangeHandler("blocks_sequence")}
                     />
                 ),
-                Schema: (
-                    <SchemaSettings
-                        target={target}
-                        config={config.schema}
-                        onChange={onChangeHandler("schema")}
-                    />
-                ),
+                Schema: <SchemaSettings target={target} config={config.schema} onChange={onChangeHandler("schema")} />,
                 Семантика: (
                     <SemanticsSettings
                         target={target}

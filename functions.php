@@ -21,6 +21,14 @@ require_once("include/social-buttons.php");
 //    carbon_set_theme_option("common__profiled_settings", WaThemeSettings::get()->get_setting_default("common__profiled_settings"));
 //    set_theme_mod("common__profiled_settings", $def);
 // });
+// /* All personal settings */
+// $where = "";
+// foreach(WaThemeSettings::get()->settings_list() as $setting){
+//     $where .= (empty($where) ? "" : " or ")."meta_key = \"_".$setting."\"";
+// }
+// global $wpdb;
+// $wpdb->query("delete from ".$wpdb->base_prefix."postmeta where ".$where);
+
 
 add_filter("redirect_term_location", function($url, $tax){
     $args = [];
@@ -60,9 +68,23 @@ function wa_subtemplate($slug, $name = null, $args = null): void {
     get_template_part("template-parts/".$slug, $name, $args);
 }
 function wa_get_date_square($date, $type = "usual"): string {
+    $months = [
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь'
+      ];
     if(is_string($date))
         $date = strtotime($date);
-    $m = date("%b", $date);
+    $m = $months[date("n", $date) - 1];
     $m = mb_strtoupper(mb_substr($m, 0, 1)).mb_strtolower(mb_substr($m, 1));
     $d = date("d", $date);
     $y = date("Y", $date);
@@ -129,6 +151,15 @@ function get_queried_category(){
     if(empty($cat) || $cat instanceof WP_Error)
         return null;
     return $cat;
+}
+function get_queried_tag(){
+    $tag = get_query_var('tag');
+    if(empty($tag))
+        return null;
+    $tag = get_tag($tag);
+    if(empty($tag) || $tag instanceof WP_Error)
+        return null;
+    return $tag;
 }
 function get_queried_category_id($default = null){
     $cat = get_queried_category();

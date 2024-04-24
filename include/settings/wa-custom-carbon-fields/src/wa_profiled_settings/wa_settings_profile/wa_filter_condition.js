@@ -218,6 +218,7 @@ export default class WaFilterCondition extends Component {
                                 })
                             ) + "..."
                         }
+                        minWidth="140px"
                         data={filterKindData(kind, {
                             inclusionKind,
                             filterKind,
@@ -246,13 +247,15 @@ export default class WaFilterCondition extends Component {
                         }}
                     />
                 )}
-                <IconButton
-                    className="rotate-content-45 flex-aligned-center"
-                    style={{ height: "32px" }}
-                    tooltip="Удалить условие"
-                    type="add"
-                    onClick={() => this.props.onDelete?.()}
-                />
+                {this.props.onDelete && (
+                    <IconButton
+                        className="rotate-content-45 flex-aligned-center"
+                        style={{ height: "32px" }}
+                        tooltip="Удалить условие"
+                        type="add"
+                        onClick={() => this.props.onDelete?.()}
+                    />
+                )}
             </div>
         );
     }

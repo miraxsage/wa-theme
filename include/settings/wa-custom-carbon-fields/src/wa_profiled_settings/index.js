@@ -148,26 +148,39 @@ class WaProfiledSettings extends Component {
             kind == "pages" ? "конкретной страницы" : kind == "posts" ? "конкретной записи" : "конкретного архива";
         return (
             <>
-                {kind != "widgets" && this.state.chosenProfile != "common" && (
+                {this.state.chosenProfile != "common" && (
                     <WaToggleCheckbox
-                        value={!!this.chosenProfile().filter[kind]}
+                        value={
+                            kind == "widgets"
+                                ? this.chosenProfile().config.sidebars.active
+                                : !!this.chosenProfile().filter[kind]
+                        }
                         onChange={(id, checked) =>
                             this.onChange(
                                 this.config.map((p) =>
                                     p.key == this.state.chosenProfile
                                         ? {
                                               ...p,
-                                              filter: {
-                                                  ...p.filter,
-                                                  [kind]: checked
-                                                      ? [
-                                                            {
-                                                                mode: "all",
-                                                                ids: [],
-                                                            },
-                                                        ]
-                                                      : null,
-                                              },
+                                              ...(kind == "widgets"
+                                                  ? {
+                                                        config: {
+                                                            ...p.config,
+                                                            sidebars: { ...p.config.sidebars, active: checked },
+                                                        },
+                                                    }
+                                                  : {
+                                                        filter: {
+                                                            ...p.filter,
+                                                            [kind]: checked
+                                                                ? [
+                                                                      {
+                                                                          mode: "all",
+                                                                          ids: [],
+                                                                      },
+                                                                  ]
+                                                                : null,
+                                                        },
+                                                    }),
                                           }
                                         : p
                                 )
@@ -183,8 +196,18 @@ class WaProfiledSettings extends Component {
                         marginTop: this.state.chosenProfile == "common" ? "0px" : "3px",
                     }}
                 >
-                    {kind != "widgets" && !this.chosenProfile().filter[kind] && this.state.chosenProfile != "common" ? (
-                        'Настройки профиля "' + this.chosenProfile().profile + '" не активны для всех ' + forKindLabel
+                    {this.state.chosenProfile != "common" &&
+                    (kind == "widgets"
+                        ? !this.chosenProfile().config.sidebars.active
+                        : !this.chosenProfile().filter[kind]) ? (
+                        kind == "widgets" ? (
+                            'Настройки виджетов для профиля "' + this.chosenProfile().profile + '" не активны'
+                        ) : (
+                            'Настройки профиля "' +
+                            this.chosenProfile().profile +
+                            '" не активны для всех ' +
+                            forKindLabel
+                        )
                     ) : this.state.chosenProfile == "common" ? (
                         <>
                             {kind == "widgets" ? (
@@ -269,27 +292,29 @@ class WaProfiledSettings extends Component {
                     Виджеты:
                 </div>
                 {this.settingsInfo("widgets")}
-                <WaTabs style={{ marginTop: "10px" }}>
-                    {{
-                        Каркас: ({ onActiveTabChange }) => (
-                            <WaSidebarsFrames
-                                config={profileConfig.sidebars}
-                                onChange={this.onSettingsChanged("sidebars")}
-                                onSettingsClick={(frame_name) => onActiveTabChange(frame_name)}
-                            />
-                        ),
-                        Header: this.frameConfigControl("header"),
-                        Footer: this.frameConfigControl("footer"),
-                        "Outer Left": this.frameConfigControl("outer_left"),
-                        "Outer Right": this.frameConfigControl("outer_right"),
-                        "Inner Left": this.frameConfigControl("inner_left"),
-                        "Inner Right": this.frameConfigControl("inner_right"),
-                    }}
-                </WaTabs>
+                {(this.state.chosenProfile == "common" || profileConfig.sidebars.active) && (
+                    <WaTabs style={{ marginTop: "10px" }}>
+                        {{
+                            Каркас: ({ onActiveTabChange }) => (
+                                <WaSidebarsFrames
+                                    config={profileConfig.sidebars}
+                                    onChange={this.onSettingsChanged("sidebars")}
+                                    onSettingsClick={(frame_name) => onActiveTabChange(frame_name)}
+                                />
+                            ),
+                            Header: this.frameConfigControl("header"),
+                            Footer: this.frameConfigControl("footer"),
+                            "Outer Left": this.frameConfigControl("outer_left"),
+                            "Outer Right": this.frameConfigControl("outer_right"),
+                            "Inner Left": this.frameConfigControl("inner_left"),
+                            "Inner Right": this.frameConfigControl("inner_right"),
+                        }}
+                    </WaTabs>
+                )}
                 <div className="wa-title" style={{ margin: "10px 0px 3px 0px" }}>
                     Дополнительные настройки:
                 </div>
-                <WaTabs selectedTab={this.activeTab.current}>
+                <WaTabs key={`additional-settings-${this.state.chosenProfile}`} selectedTab={this.activeTab.current}>
                     {{
                         ...Object.fromEntries(
                             [

@@ -4,7 +4,7 @@
 
 $this->config["archive__blocks_sequence"] = [
     "type" => "sortable_toggle_list",
-    "default" => "article_open:1,img:1,header_open:1,header:1,meta_above:1,header_close:1,excerpt:1,more:1,article_close:1",
+    "default" => '{"sequence": "article_open:1,img:1,header_open:1,header:1,meta_above:1,header_close:1,excerpt:1,more:1,article_close:1,block_1:0,block_2:0,block_3:0", "blocks": ["","",""]}',
     "title" => "Последовательность блоков",
     "description" => "Укажите видимость и порядок следования блоков для каждой записи на странице архива",
     'choices' => [

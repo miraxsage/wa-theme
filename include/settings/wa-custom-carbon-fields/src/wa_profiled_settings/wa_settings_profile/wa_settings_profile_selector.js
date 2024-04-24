@@ -157,7 +157,7 @@ class WaSettingsProfileSelector extends Component {
                     </button>
                     <Info
                         style={{
-                            padding: "3px 0px 16px 0px",
+                            padding: "3px 10px 16px 10px",
                             marginTop: "10px",
                             width: "auto",
                         }}

@@ -58,32 +58,48 @@ class WaThemeSettings{
         return $default;
     }
 
-    public function get_setting($name, $raw = true, $ignore_personal = false, $ignore_parent = false){
-        if(wa_is_page())
-            $name = preg_replace("/^record_/", "page_", $name);
-        if(wa_is_record())
-            $name = preg_replace("/^page_/", "record_", $name);
+    public function get_setting($name, $raw = true, $ignore_personal = false, $ignore_parent = false, $queried_obj = null){
+        if($queried_obj ? $queried_obj instanceof WP_Post && get_post_type($queried_obj->ID) == "page" : wa_is_page())
+            $name = preg_replace("/^(post|record)_/", "page_", $name);
+        if($queried_obj ? $queried_obj instanceof WP_Post && get_post_type($queried_obj->ID) == "post" : wa_is_record())
+            $name = preg_replace("/^(page|post)_/", "record_", $name);
 
-        if(!array_key_exists($name, $this->config))
-            return null;
+        $is_profiled_setting = false;
+        foreach(["page", "record", "archive"] as $target){
+            foreach(["__blocks_sequence", "_schema__", "_semantics__"] as $sett){
+                if(str_starts_with($name, $target.$sett)){
+                    $is_profiled_setting = true;
+                    break;
+                }
+            }
+        }
+        
+        $config = null;
+        if(!array_key_exists($name, $this->config)){
+            if(!$is_profiled_setting)
+                return null;
+        }
+        else
+            $config = $this->config[$name];
 
-        $config = $this->config[$name];
 
         //retrieving personal settings
         $val = null;
+
         if($ignore_personal !== true) {
-            if(str_starts_with($name, "archive")) {
-                $queried_cat = get_queried_category();
-                if (!empty($queried_cat)) {
-                    if ($queried_cat instanceof WP_Term) {
-                        $val = carbon_get_term_meta($queried_cat->term_id, $name);
-                        if(str_ends_with($name, "__profiled_settings") && $this->get_setting_default($name) == $val)
-                            $val = null;
-                    }
-                }
-            }
-            elseif(str_starts_with($name, "record_") || str_starts_with($name, "page_")) {
-                $queried_obj = get_queried_object();
+            // if(str_starts_with($name, "archive")) {
+            //     $queried_cat = get_queried_category();
+            //     if (!empty($queried_cat)) {
+            //         if ($queried_cat instanceof WP_Term) {
+            //             $val = carbon_get_term_meta($queried_cat->term_id, $name);
+            //             if(str_ends_with($name, "__profiled_settings") && $this->get_setting_default($name) == $val)
+            //                 $val = null;
+            //         }
+            //     }
+            // }
+            // else
+            if(str_starts_with($name, "record_") || str_starts_with($name, "page_")) {
+                $queried_obj = !empty($querieq_obj) ? $querieq_obj : get_queried_object();
                 if (!empty($queried_obj)) {
                     if ($queried_obj instanceof WP_Post) {
                         $val = carbon_get_post_meta($queried_obj->ID, $name);
@@ -94,49 +110,61 @@ class WaThemeSettings{
             }
         }
 
+        if(empty($val) && $is_profiled_setting){
+            $profile = $this->profile_config(null, $queried_obj);
 
-        //retrieving parent page / category settings
-        $search_further = $val === null || $val === "[!discard personal]";
-        $empty_text = ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
-        if($ignore_parent !== true && (str_starts_with($name, "record_") || str_starts_with($name, "page_")) && ($search_further || $empty_text)) {
-            $queried_obj = wa_queried_object();
-            if (!empty($queried_obj) && $queried_obj instanceof WP_Post) {
-                $post_type = get_post_type($queried_obj->ID);
-                if($post_type == "page"){
-                    $name = preg_replace("/^record_/", "page_", $name);
-                    if(!empty($queried_obj->post_parent)){
-                        $parent_page = get_post($queried_obj->post_parent);
-                        if(!empty($parent_page))
-                            $val = carbon_get_post_meta($parent_page->ID, $name);
-                    }
-                }
-                elseif($post_type == "post"){
-                    $name = preg_replace("/^page_/", "record_", $name);
-                    $wp_main_cat = get_post_meta($queried_obj->ID, 'wa_main_category', true);
-                    if(!empty($wp_main_cat)) {
-                        $category = get_category($wp_main_cat);
-                        if(!empty($category)){
-                            $val = carbon_get_term_meta($category->cat_ID, $name);
-                        }
-                    }
-                }
-            }
+
+            $target = str_starts_with($name, "page") ? "pages" : (str_starts_with($name, "archive") ? "archives" : "posts");
+            $setting_category = str_contains($name, "_schema_") ? "schema" : (str_contains($name, "_semantics_") ? "semantics" : null);
+            $setting = str_replace(($target == "posts" ? "record" : substr($target, 0, -1))."_".($setting_category ? $setting_category."_" : "")."_", "", $name);
+            $setting_array = $setting_category ? $profile["config"][$target][$setting_category] : $profile["config"][$target];
+
+            if(array_key_exists($setting, $setting_array))
+                $val = $setting_array[$setting];
         }
 
-        //retrieving parent page / category settings by pointed parent (category or page instead of "ignore_parent")
-        $search_further = $val === null || $val === "[!discard personal]";
-        $empty_text = ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
-        if(!empty($ignore_parent) && (str_starts_with($name, "record_") || str_starts_with($name, "page_")) && ($search_further || $empty_text)) {
-            if(is_numeric($ignore_parent) && str_starts_with($name, "record_")){
-                $val = carbon_get_term_meta($ignore_parent, $name);
-            }
-            elseif(is_numeric($ignore_parent) && str_starts_with($name, "page_")){
-                $val = carbon_get_post_meta($ignore_parent, $name);
-            }
-        }
+        // //retrieving parent page / category settings
+        // $search_further = $val === null || $val === "[!discard personal]";
+        // $empty_text = ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
+        // if($ignore_parent !== true && (str_starts_with($name, "record_") || str_starts_with($name, "page_")) && ($search_further || $empty_text)) {
+        //     $queried_obj = wa_queried_object();
+        //     if (!empty($queried_obj) && $queried_obj instanceof WP_Post) {
+        //         $post_type = get_post_type($queried_obj->ID);
+        //         if($post_type == "page"){
+        //             $name = preg_replace("/^record_/", "page_", $name);
+        //             if(!empty($queried_obj->post_parent)){
+        //                 $parent_page = get_post($queried_obj->post_parent);
+        //                 if(!empty($parent_page))
+        //                     $val = carbon_get_post_meta($parent_page->ID, $name);
+        //             }
+        //         }
+        //         elseif($post_type == "post"){
+        //             $name = preg_replace("/^page_/", "record_", $name);
+        //             $wp_main_cat = get_post_meta($queried_obj->ID, 'wa_main_category', true);
+        //             if(!empty($wp_main_cat)) {
+        //                 $category = get_category($wp_main_cat);
+        //                 if(!empty($category)){
+        //                     $val = carbon_get_term_meta($category->cat_ID, $name);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        $search_further = $val === null || $val === "[!discard personal]";
-        $empty_text = ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
+        // //retrieving parent page / category settings by pointed parent (category or page instead of "ignore_parent")
+        // $search_further = $val === null || $val === "[!discard personal]";
+        // $empty_text = ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
+        // if(!empty($ignore_parent) && (str_starts_with($name, "record_") || str_starts_with($name, "page_")) && ($search_further || $empty_text)) {
+        //     if(is_numeric($ignore_parent) && str_starts_with($name, "record_")){
+        //         $val = carbon_get_term_meta($ignore_parent, $name);
+        //     }
+        //     elseif(is_numeric($ignore_parent) && str_starts_with($name, "page_")){
+        //         $val = carbon_get_post_meta($ignore_parent, $name);
+        //     }
+        // }
+
+        $search_further = !$is_profiled_setting && ($val === null || $val === "[!discard personal]");
+        $empty_text = !$is_profiled_setting && ($config["type"] == "text" || $config["type"] == "textarea") && $val === "";
         //retrieving common settings
         if($search_further || $empty_text) {
             if (array_key_exists($name, $this->cache))
@@ -163,6 +191,18 @@ class WaThemeSettings{
     public function extract_raw_value($raw_value, $setting){
         if(!is_string($raw_value))
             return $raw_value;
+        if(str_ends_with($setting, "blocks_sequence") && preg_match("/^\s*{\s*\"sequence\"\s*:/", $raw_value) === 1){
+            $val_obj = json_decode($raw_value, true);
+            $sequence = $val_obj["sequence"];
+            $sequence_arr = [];
+            $pairs = explode(",", $sequence);
+            foreach ($pairs as $pair){
+                $keyval = explode(":", $pair);
+                $sequence_arr[$keyval[0]] = ($keyval[1] == 1);
+            }
+            $val_obj["sequence"] = $sequence_arr;
+            return $val_obj;
+        }
         if(!array_key_exists($setting, $this->config))
             return $raw_value;
         $config = $this->config[$setting];
@@ -197,54 +237,152 @@ class WaThemeSettings{
     public function __get($name){
         return $this->get_setting($name, false);
     }
-    function check_sidebar_config_profile_match($profile){
-        $profile_filter = $profile["filter"];
-        if(in_array("home", $profile_filter["pages"]["ids"]) && is_home())
+    function check_profile_config_condition($current_obj, $condition){
+        $cur_type = $current_obj["type"];
+        $cur_obj = $current_obj["obj"];
+        $cond_ids = $condition["ids"];
+        $cond_inclusion = (str_starts_with($condition["mode"], "include") ? "include" : (str_starts_with($condition["mode"], "exclude") ? "exclude" : "all"));
+        $cond_el = (str_ends_with($condition["mode"], "cats") ? "cat" : (str_ends_with($condition["mode"], "tags") ? "tag" : (str_ends_with($condition["mode"], "children") ? "child" : "element")));
+        
+        if($cond_inclusion == "all")
             return true;
-        if(in_array("search", $profile_filter["cats"]["ids"]) && is_search())
-            return true;
-        if(wa_is_single()) {
-            $qobj = get_queried_object();
-            if($qobj instanceof WP_Post){
-                $type = get_post_type($qobj->ID) == "page" ? "pages" : "posts";
-                if($profile_filter[$type]["mode"] == "all")
-                    return true;
-                $include = in_array($qobj->ID, $profile_filter[$type]["ids"]);
-                if($include ? $profile_filter[$type]["mode"] == "include" : $profile_filter[$type]["mode"] == "exclude")
-                    return true;
-            }
+        if($cur_type == "archive")
+            return ($cur_obj == "home" || $cur_obj == "search") && in_array($cur_obj, $cond_ids);
+        if($cur_type == "cat" || $cur_type == "tag")
+            return $cur_type == $cond_el && in_array($cur_obj, $cond_ids);
+        if($cond_el == "element"){
+            if(in_array($cur_obj->ID, $cond_ids))
+                return $cond_inclusion == "include";
+            else
+                return $cond_inclusion == "exclude";
         }
-        else if(wa_is_archive()){
-            if($profile_filter["cats"]["mode"] == "all")
-                return true;
-            $queried_cat = get_queried_category();
-            if (!empty($queried_cat)) {
-                if ($queried_cat instanceof WP_Term) {
-                    $include = in_array($queried_cat->term_id, $profile_filter["cats"]["ids"]);
-                    if($include ? $profile_filter["cats"]["mode"] == "include" : $profile_filter["cats"]["mode"] == "exclude")
-                        return true;
+        else {
+            if($cur_type == "post"){
+                if($cond_el == "cat"){
+                    $post_cats = wp_get_post_categories($cur_obj->ID);
+                    foreach($post_cats as $post_cat_id){
+                        if(in_array($post_cat_id, $cond_ids))
+                            return true;
+                    }
+                }
+                else if($cond_el == "tag"){
+                    $post_tags = wp_get_post_tags($cur_obj->ID);
+                    foreach($post_tags as $post_tag){
+                        if(in_array($post_tag->term_id, $cond_ids))
+                            return true;
+                    }
+                }
+            }
+            else if($cur_type == "page"){
+                if($cond_el == "child" && in_array($cur_obj->post_parent, $cond_ids)){
+                    return true;
                 }
             }
         }
-        return $profile_filter["pages"]["mode"] == "all" && $profile_filter["posts"]["mode"] == "all" && $profile_filter["cats"]["mode"] == "all";
+        return false;
     }
-    public function sidebar_config($sidebar = null){
+    function check_profile_config_match($profile, $queried_obj = null){
+        if($profile["key"] == "common")
+            return true;
+        $current_obj = [];
+        if(wa_is_single()) {
+            $qobj = $queried_obj ? $queried_obj : get_queried_object();
+            if($qobj instanceof WP_Post){
+                $current_obj["type"] = get_post_type($qobj->ID) == "page" ? "page" : "post";
+                $current_obj["obj"] = $qobj;
+            }
+            else
+                return false;
+        }
+        else {
+            if($queried_obj == "home" || is_home()){
+                $current_obj["type"] = "archive";
+                $current_obj["obj"] = "home";
+            }
+            else if($queried_obj == "search" || is_search()){
+                $current_obj["type"] = "archive";
+                $current_obj["obj"] = "search";
+            }
+            else {
+                $queried_cat = ($queried_obj && get_category($queried_obj) ? $queried_obj : get_queried_category());
+                if (!empty($queried_cat)) {
+                    $current_obj["type"] = "cat";
+                    $current_obj["obj"] = $queried_cat;
+                }
+                else {
+                    $queried_tag = ($queried_obj && get_term($queried_obj) ? $queried_obj : get_queried_tag());
+                    if (!empty($queried_tag)) {
+                        $current_obj["type"] = "tag";
+                        $current_obj["obj"] = $queried_tag;
+                    }
+                }
+            }
+        }
+        $filter_type = ($current_obj["type"] == "page" ? "pages" : ($current_obj["type"] == "post" ? "posts" : "archives"));
+        if(!$profile["filter"][$filter_type])
+            return false;
+        foreach($profile["filter"][$filter_type] as $condition){
+            if($this->check_profile_config_condition($current_obj, $condition))
+                return true;
+        }
+        return false;
+
+        // $profile_filter = $profile["filter"];
+        // if(in_array("home", $profile_filter["pages"]["ids"]) && is_home())
+        //     return true;
+        // if(in_array("search", $profile_filter["cats"]["ids"]) && is_search())
+        //     return true;
+        // if(wa_is_single()) {
+        //     $qobj = get_queried_object();
+        //     if($qobj instanceof WP_Post){
+        //         $type = get_post_type($qobj->ID) == "page" ? "pages" : "posts";
+        //         if($profile_filter[$type]["mode"] == "all")
+        //             return true;
+        //         $include = in_array($qobj->ID, $profile_filter[$type]["ids"]);
+        //         if($include ? $profile_filter[$type]["mode"] == "include" : $profile_filter[$type]["mode"] == "exclude")
+        //             return true;
+        //     }
+        // }
+        // else if(wa_is_archive()){
+        //     if($profile_filter["cats"]["mode"] == "all")
+        //         return true;
+        //     $queried_cat = get_queried_category();
+        //     if (!empty($queried_cat)) {
+        //         if ($queried_cat instanceof WP_Term) {
+        //             $include = in_array($queried_cat->term_id, $profile_filter["cats"]["ids"]);
+        //             if($include ? $profile_filter["cats"]["mode"] == "include" : $profile_filter["cats"]["mode"] == "exclude")
+        //                 return true;
+        //         }
+        //     }
+        // }
+        // return $profile_filter["pages"]["mode"] == "all" && $profile_filter["posts"]["mode"] == "all" && $profile_filter["cats"]["mode"] == "all";
+    }
+    
+    public function profile_config($predicate = null, $queried_obj = null){
+
         $default_full_config = $this->get_setting_default("common__profiled_settings");
         $full_config = $this->get_setting("common__profiled_settings", true);
         if(empty($full_config))
             $full_config = $default_full_config || null;
-        if(empty($full_config) || empty($sidebar))
+        if(empty($full_config))
             return null;
         $full_config = json_decode($full_config, true);
+        $profile = null;
         foreach ($full_config as $c){
-            if($this->check_sidebar_config_profile_match($c)){
-                $config = $c["config"];
+            if($this->check_profile_config_match($c, $queried_obj) && (!$predicate || $predicate($c))){
+                $profile = $c;
                 break;
             }
         }
-        if(!empty($config) && array_key_exists($sidebar, $config))
-            return $config[$sidebar];
-        return null;
+        return $profile;
+    }
+
+    public function sidebar_config($sidebar = null){
+        if(empty($sidebar))
+            return null;
+        $profile = $this->profile_config(function($profile){ return $profile["config"]["sidebars"]["active"]; });
+        if(!empty($profile) && array_key_exists($sidebar, $profile["config"]["sidebars"]))
+        return $profile["config"]["sidebars"][$sidebar];
     }
     public function schema_item($item, $prefix = "", $suffix = "", $parent_obj_id = null){
         $is_archive = wa_is_archive();

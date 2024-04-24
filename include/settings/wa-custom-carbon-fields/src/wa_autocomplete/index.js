@@ -83,7 +83,7 @@ export default class WaAutoComplete extends Component {
             suggestions: this.props.data,
             areSuggsShown: saveFocus,
         });
-        setTimeout(() => this.rootRef.current.querySelector("input")[saveFocus ? "focus" : "blur"]());
+        setTimeout(() => this.rootRef.current?.querySelector("input")[saveFocus ? "focus" : "blur"]());
         if (this.props.onSelected)
             this.props.onSelected(
                 this.props.multiple
@@ -150,7 +150,7 @@ export default class WaAutoComplete extends Component {
         if (inputHeight && inputHeight != this.state.inputHeight) this.setState({ inputHeight });
     }
     render() {
-        const { pholder, multiple = false, className, style } = this.props;
+        const { pholder, multiple = false, className, style, minWidth } = this.props;
         const { inputVal, suggestions, areSuggsShown, selectedIds, inputHeight } = this.state;
         let selectedVal = null;
         if (!multiple && selectedIds.length > 0) selectedVal = this.props.data.find((d) => d.id == selectedIds[0]);
@@ -196,7 +196,7 @@ export default class WaAutoComplete extends Component {
                         placeholder={pholder}
                         type="search"
                         value={inputVal}
-                        style={{ width: inputWidth }}
+                        style={{ minWidth, width: inputWidth }}
                         onChange={this.onChange}
                         onFocus={(e) => {
                             if (!e.target.value) this.onChange();

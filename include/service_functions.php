@@ -120,11 +120,11 @@ function similar_posts($post_id){
         (
             select id,
                    %s as relevance	
-            from wp_posts
+            from '.$wpdb->posts.'
                 where post_type = "%s" and ID <> %s
     
         ) as p
-        left join wp_term_relationships as rel
+        left join '.$wpdb->term_relationships.' as rel
             on rel.object_id = p.id and rel.term_taxonomy_id in (%s) 
         group by p.id, p.relevance
     ) as q

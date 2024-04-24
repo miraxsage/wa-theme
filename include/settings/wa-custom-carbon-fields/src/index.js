@@ -14,6 +14,7 @@ import WaHtml from "./wa_html";
 import WaText from "./wa_text";
 import WaActiveTabSaver from "./wa_active_tab_saver";
 import WaProfiledSettings from "./wa_profiled_settings";
+import WaBlocksSequence from "./wa_blocks_sequence";
 
 registerFieldType("wa_active_tab_saver", WaActiveTabSaver);
 registerFieldType("wa_html", WaHtml);
@@ -23,3 +24,4 @@ registerFieldType("wa_toggle", WaToggle);
 registerFieldType("wa_schema_info", WaSchemaInfo);
 registerFieldType("wa_toggle_button_list", WaToggleButtonsList);
 registerFieldType("wa_profiled_settings", WaProfiledSettings);
+registerFieldType("wa_blocks_sequence", WaBlocksSequence);

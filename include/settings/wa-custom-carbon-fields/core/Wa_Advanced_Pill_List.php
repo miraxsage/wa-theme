@@ -20,7 +20,7 @@ class Wa_Advanced_Pill_List_Field extends Wa_Custom_Carbon {
 
 	public function to_json( $load ) {
 		$field_data = parent::to_json( $load );
-        $saved_choices = explode(",", $this->get_value());
+        $saved_choices = explode(",", $this->get_value() ?? "");
         if($this->sortable) {
             foreach ($saved_choices as $saved_choice) {
                 $keyval = explode(":", esc_attr($saved_choice));

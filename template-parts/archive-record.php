@@ -70,10 +70,17 @@ else { ?>
 <?php }
 
 $context = compact("permalink", "title", "preview", "post", "settings");
-foreach($settings->archive__blocks_sequence as $part => $visible){
+
+$blocks_sequence = $settings->archive__blocks_sequence;
+
+foreach($blocks_sequence["sequence"] as $part => $visible){
     if(!$visible)
         continue;
-    wa_print_archive_record_part($part, $context);
+    if(preg_match("/^block_(\\d+)$/", $part, $block_num_match) === 1){
+        echo do_shortcode(base64_decode($blocks_sequence["blocks"][intval($block_num_match[1]) - 1]));
+    }
+    else
+        wa_print_archive_record_part($part, $context);
 }
 
 if($detailed_mode)

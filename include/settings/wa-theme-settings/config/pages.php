@@ -3,10 +3,10 @@
 // Блок последовательность блоков
 
 $this->config["page__blocks_sequence"] = [
-    "type" => "sortable_toggle_list",
-    "default" => "breadcrumbs:1,main_article_open:1,header_open:1,img:1,header:1,meta_above:1,header_close:1,contents_list:1,content:1,main_article_close:1,social_buttons:1,comments:1",
+    "type" => "blocks_sequence",
+    "default" => '{"sequence": "breadcrumbs:1,main_article_open:1,header_open:1,img:1,header:1,meta_above:1,header_close:1,contents_list:1,content:1,main_article_close:1,social_buttons:1,comments:1,block_1:0,block_2:0,block_3:0", "blocks": ["","",""]}',
     "title" => "Последовательность блоков",
-    "description" => "Укажите видимость и порядок следования блоков для каждой записи",
+    "description" => "Укажите видимость и порядок следования блоков для текущей страницы",
     'choices' => [
         'breadcrumbs' => 'Хлебные крошки',
         'main_article_open' => ['label' => '<main><article>', 'class' => 'wa-sequence-section-fix metaitem'],

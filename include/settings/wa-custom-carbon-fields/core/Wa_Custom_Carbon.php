@@ -63,8 +63,12 @@ class Wa_Custom_Carbon extends \Carbon_Fields\Field\Field {
             }
         }
         if($this->is_personal_setting){
-            $field_data["personal_mode"] = true;
-            $field_data["common_value"] = \WaThemeSettings::get()->get_setting($this->base_name, true, true);
+            $field_data["personal_mode"] = true; 
+            global $post;
+            $edit_post_or_page = null;
+            if($post && $post instanceof \WP_Post && ($post->post_type == "page" || $post->post_type == "post"))
+                $edit_post_or_page = $post;
+            $field_data["common_value"] = \WaThemeSettings::get()->get_setting($this->base_name, true, true, false, $edit_post_or_page);
             if(empty($field_data["value"]))
                 $field_data["value"] = "[!discard personal]";
         }

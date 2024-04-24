@@ -107,7 +107,9 @@ wa_template("frame", null, "begin");
 $similars_are_printed = wa_is_page();
 $in_wa_section = false;
 
-$toend = count($settings->record__blocks_sequence);
+$blocks_sequence = $settings->record__blocks_sequence;
+
+$toend = count($blocks_sequence["sequence"]);
 $first = true;
 
 if($settings->record__img_outside): ?>
@@ -119,7 +121,7 @@ if($settings->record__img_outside): ?>
 <?php endif;
 echo "<div class=\"wa-section\">";
 
-foreach($settings->record__blocks_sequence as $block => $visible){
+foreach($blocks_sequence["sequence"] as $block => $visible){
    $toend--;
    if($block == "similar_records") {
        if($toend == 0 && $visible)
@@ -129,8 +131,12 @@ foreach($settings->record__blocks_sequence as $block => $visible){
    $context["in_wa_section"] = $in_wa_section;
    $context["first"] = $first;
    $context["last"] = $toend == 0;
-   if($visible)
-       wa_print_block($block, $context);
+   if($visible){
+      if(preg_match("/^block_(\\d+)$/", $block, $block_num_match) === 1)
+          echo do_shortcode(base64_decode($blocks_sequence["blocks"][intval($block_num_match[1]) - 1]));
+      else
+          wa_print_block($block, $context);
+   }
    $first = false;
 }
 echo "</div>";

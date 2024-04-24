@@ -47,8 +47,7 @@ class WaAdvancedPillList extends WaPersonalizedComponent {
         const { id, onChange } = this.props;
         let val = "";
         for (let item of this.state.items) {
-            val +=
-                (val ? "," : "") + item.key + ":" + (item.checked ? "1" : "0");
+            val += (val ? "," : "") + item.key + ":" + (item.checked ? "1" : "0");
         }
         if (val != this.props.value) onChange(id, val);
     }
@@ -91,15 +90,7 @@ class WaAdvancedPillList extends WaPersonalizedComponent {
     onDragEnd(result) {
         if (!result.destination) return;
         let item = this.state.items[result.source.index];
-        if (
-            !this.checkItemPosValidity(
-                item,
-                result.source.index,
-                result.destination.index,
-                false
-            )
-        )
-            return;
+        if (!this.checkItemPosValidity(item, result.source.index, result.destination.index, false)) return;
         let newItems = [...this.state.items];
         let [removed] = newItems.splice(result.source.index, 1);
         newItems.splice(result.destination.index, 0, removed);
@@ -110,11 +101,7 @@ class WaAdvancedPillList extends WaPersonalizedComponent {
     onDragUpdate(result) {
         if (!result.destination) return;
         let item = this.state.items[result.source.index];
-        this.checkItemPosValidity(
-            item,
-            result.source.index,
-            result.destination.index
-        );
+        this.checkItemPosValidity(item, result.source.index, result.destination.index);
     }
 
     checkItemPosValidity(item, initpos, pos, setStatus = true) {
@@ -143,122 +130,84 @@ class WaAdvancedPillList extends WaPersonalizedComponent {
     render() {
         this.onChange();
         const { id, name, value, field } = this.props;
-        return (
-            <div
-                ref={this.rootRef}
-                className={classes(
-                    "wa-advanced-pill-list",
-                    this.getPersonalizedClass()
-                )}
-            >
-                <WaResetOptionsHeader
-                    label={field.label}
-                    {...this.resetProps}
-                    context={field.context}
-                >
+        const content = (
+            <>
+                <input
+                    type="hidden"
+                    id={this.props.id}
+                    name={this.props.name}
+                    value={this.getValueToSave(this.props.value)}
+                />
+                <DragDropContext onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
+                    <Droppable droppableId="droppable">
+                        {(provided, snapshot) => (
+                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                                {this.state.items.map((item, index) => (
+                                    <Draggable key={item.key} draggableId={item.key} index={index}>
+                                        {(provided, snapshot) => {
+                                            return (
+                                                <div
+                                                    className={[
+                                                        "wa-advanced-pill-list__item",
+                                                        item.checked ? "wa-advanced-pill-list__item_checked" : "",
+                                                        item.status == "forbidden" ? " blocked" : "",
+                                                        ...item.classes
+                                                            .replace(",", " ")
+                                                            .replace(/\s+/, " ")
+                                                            .split(" "),
+                                                    ].join(" ")}
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...(item.metaitem ? {} : provided.dragHandleProps)}
+                                                    onClick={() => this.changeVisibility(index)}
+                                                >
+                                                    {item.metaitem ? (
+                                                        <div
+                                                            style={{
+                                                                display: "none",
+                                                            }}
+                                                            {...provided.dragHandleProps}
+                                                        ></div>
+                                                    ) : (
+                                                        ""
+                                                    )}
+                                                    <span
+                                                        class={
+                                                            "dashicons" +
+                                                            (item.checked
+                                                                ? " dashicons-visibility"
+                                                                : " dashicons-hidden")
+                                                        }
+                                                        style={{
+                                                            display: item.metaitem ? "none" : "inline-block",
+                                                        }}
+                                                    ></span>
+                                                    <span>{item.label}</span>
+                                                </div>
+                                            );
+                                        }}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </>
+        );
+        return field.label ? (
+            <div ref={this.rootRef} className={classes("wa-advanced-pill-list", this.getPersonalizedClass())}>
+                <WaResetOptionsHeader label={field.label} {...this.resetProps} context={field.context}>
                     {this.description ? (
-                        <span className="wa-advanced-pill-list__description">
-                            {this.description}
-                        </span>
+                        <span className="wa-advanced-pill-list__description">{this.description}</span>
                     ) : (
                         ""
                     )}
-                    <input
-                        type="hidden"
-                        id={this.props.id}
-                        name={this.props.name}
-                        value={this.getValueToSave(this.props.value)}
-                    />
-                    <DragDropContext
-                        onDragEnd={this.onDragEnd}
-                        onDragUpdate={this.onDragUpdate}
-                    >
-                        <Droppable droppableId="droppable">
-                            {(provided, snapshot) => (
-                                <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                >
-                                    {this.state.items.map((item, index) => (
-                                        <Draggable
-                                            key={item.key}
-                                            draggableId={item.key}
-                                            index={index}
-                                        >
-                                            {(provided, snapshot) => {
-                                                return (
-                                                    <div
-                                                        className={[
-                                                            "wa-advanced-pill-list__item",
-                                                            item.checked
-                                                                ? "wa-advanced-pill-list__item_checked"
-                                                                : "",
-                                                            item.status ==
-                                                            "forbidden"
-                                                                ? " blocked"
-                                                                : "",
-                                                            ...item.classes
-                                                                .replace(
-                                                                    ",",
-                                                                    " "
-                                                                )
-                                                                .replace(
-                                                                    /\s+/,
-                                                                    " "
-                                                                )
-                                                                .split(" "),
-                                                        ].join(" ")}
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...(item.metaitem
-                                                            ? {}
-                                                            : provided.dragHandleProps)}
-                                                        onClick={() =>
-                                                            this.changeVisibility(
-                                                                index
-                                                            )
-                                                        }
-                                                    >
-                                                        {item.metaitem ? (
-                                                            <div
-                                                                style={{
-                                                                    display:
-                                                                        "none",
-                                                                }}
-                                                                {...provided.dragHandleProps}
-                                                            ></div>
-                                                        ) : (
-                                                            ""
-                                                        )}
-                                                        <span
-                                                            class={
-                                                                "dashicons" +
-                                                                (item.checked
-                                                                    ? " dashicons-visibility"
-                                                                    : " dashicons-hidden")
-                                                            }
-                                                            style={{
-                                                                display:
-                                                                    item.metaitem
-                                                                        ? "none"
-                                                                        : "inline-block",
-                                                            }}
-                                                        ></span>
-                                                        <span>
-                                                            {item.label}
-                                                        </span>
-                                                    </div>
-                                                );
-                                            }}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                    {content}
                 </WaResetOptionsHeader>
             </div>
+        ) : (
+            content
         );
     }
 }

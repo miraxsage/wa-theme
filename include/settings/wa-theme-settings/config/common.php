@@ -100,7 +100,7 @@ trait WaThemeSettingsConfig{
             "pages" => $this->config["page__profiled_settings"]["default"],
             "posts" => $this->config["record__profiled_settings"]["default"],
             "archives" => $this->config["archive__profiled_settings"]["default"],
-            "sidebars" => json_decode(sprintf('{"header":%1$s,"footer":%1$s,"inner_left":%1$s,"inner_right":%1$s,"outer_left":%1$s,"outer_right":%1$s}', $widgets_block_defaults)) 
+            "sidebars" => json_decode(sprintf('{"active":true,"header":%1$s,"footer":%1$s,"inner_left":%1$s,"inner_right":%1$s,"outer_left":%1$s,"outer_right":%1$s}', $widgets_block_defaults)) 
         ]);
         $this->config["common__profiled_settings"] = [
             "type" => "profiled_settings",
@@ -108,6 +108,10 @@ trait WaThemeSettingsConfig{
             "title" => "",
             "description" => ""
         ];
+        //"filter": {"posts": [{mode: "all" | "include" | "exclude" | 
+                                   // "include_cats" | "include_tags" | "include_children" | 
+                                   // "exclude_cats" | "exclude_tags" | "exclude_children"}], 
+                  // "pages": null, "archives": null}
     }
 
     private function choices_to_buttons($choices){
@@ -205,6 +209,11 @@ trait WaThemeSettingsConfig{
             }
             elseif($config["type"] == "sortable_toggle_list")
                 return Field::make('wa_advanced_pill_list', $setting, $config["title"])
+                    ->set_description($config["description"])
+                    ->set_default_value($default ?? "")
+                    ->set_choices($config["choices"]);
+            elseif($config["type"] == "blocks_sequence")
+                return Field::make('wa_blocks_sequence', $setting, $config["title"])
                     ->set_description($config["description"])
                     ->set_default_value($default ?? "")
                     ->set_choices($config["choices"]);
